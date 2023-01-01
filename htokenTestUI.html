@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HToken UI</title>
+  </head>
+  <body>
+    <h1>HToken UI</h1>
+
+    <!-- Display the HToken balance of the current account -->
+    <p>Your HToken balance: <span id="balance"></span></p>
+
+    <!-- Form to mint HToken in exchange for PaxGold -->
+    <form id="mint-form">
+      <label for="mint-value">Mint value:</label>
+      <input type="text" id="mint-value" />
+      <button type="submit">Mint</button>
+    </form>
+
+    <!-- Form to burn HToken in exchange for PaxGold -->
+    <form id="burn-form">
+      <label for="burn-value">Burn value:</label>
+      <input type="text" id="burn-value" />
+      <button type="submit">Burn</button>
+    </form>
+
+    <!-- Form to transfer HToken to another account -->
+    <form id="transfer-form">
+      <label for="transfer-recipient">Recipient:</label>
+      <input type="text" id="transfer-recipient" />
+      <label for="transfer-amount">Amount:</label>
+      <input type="text" id="transfer-amount" />
+      <button type="submit">Transfer</button>
+    </form>
+
+    <!-- Display error messages -->
+    <p id="error" style="color: red;"></p>
+
+    <!-- Load the Web3 library -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+
+       <script>
+      // Your HToken contract address
+      const contractAddress = "0x...";
+
+      // Your HToken contract ABI
+      const contractABI = [
+        {
+          "constant": true,
+          "inputs": [],
+          "name": "totalSupply",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        ...
+      ];
+
+      // The Web3 object
+      let web3;
+
+      // The HToken contract object
+      let htoken;
+
+      // The current account
+      let account;
+
+      // Initialize the Web3 object and the HToken contract object
+      async function init() {
+        // Check if the Web3 object is already available (e.g. MetaMask)
+        if (typeof web3 !== "undefined") {
+          web3 = new Web3(web3.currentProvider);
+        } else {
+          // If not, create a new Web3 object
+          web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+        }
+
+        // Get the current account
+        account = (await web3.eth.getAccounts())[0];
+
+        // Initialize the HToken contract object
+        htoken = new web3.eth.Contract(contractABI, contractAddress);
+      }
+
+      // Display the current HToken balance
+      async function displayBalance() {
+        // Call the balanceOf function on the HToken contract
+        let balance = await htoken.methods.balanceOf(account).call();
+
+        // Display the balance
+        document.getElementById("balance").innerHTML = balance
+  }
+
+      // Handle the "Mint" form submission
+      async function handleMintForm(event) {
+        // Prevent the form from reloading the page
+        event.preventDefault();
+
+        // Get the mint value from the form
+        let value = document.getElementById("mint-value").value;
+
+        // Call the mint function on the HToken contract
+        try {
+          await htoken.methods.mint(value).send({ from: account });
+        } catch (error) {
+          // Display the error message
+          document.getElementById("error").innerHTML = error.message;
+          return;
+        }
+
+        // Clear the error message
+        document.getElementById("error").innerHTML = "";
+
+        // Display the updated balance
+        displayBalance();
+      }
+
+           // Handle the "Burn" form submission
+      async function handleBurnForm(event) {
+        // Prevent the form from reloading the page
+        event.preventDefault();
+
+        // Get the burn value from the form
+        let value = document.getElementById("burn-value").value;
+
+        // Call the burn function on the HToken contract
+        try {
+          await htoken.methods.burn(value).send({ from: account });
+        } catch (error) {
+          // Display the error message
+          document.getElementById("error").innerHTML = error.message;
+          return;
+        }
+
+        // Clear the error message
+        document.getElementById("error").innerHTML = "";
+
+        // Display the updated balance
+        displayBalance();
+      }
+      // Handle the "Transfer" form submission
+      async function handleTransferForm(event) {
+        // Prevent the form from reloading the page
+        event.preventDefault();
+
+        // Get the recipient and amount from the form
+        let recipient = document.getElementById("transfer-recipient").value;
+        let amount = document.getElementById("transfer-amount").value;
+
+        // Call the transfer function on the HToken contract
+        try {
+          await htoken.methods.transfer(recipient, amount).send({ from: account });
+        } catch (error) {
+          // Display the error message
+          document.getElementById("error").innerHTML = error.message;
+          return;
+        }
+
+        // Clear the error message
+        document.getElementById("error").innerHTML = "";
+
+        // Display the updated balance
+        displayBalance();
+      }
