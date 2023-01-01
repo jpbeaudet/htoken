@@ -26,40 +26,42 @@ contract HToken is SafeERC20 {
     }
 
     // Mints new HToken in exchange for PaxGold.
-    function mint(uint256 _value) public {
-        // Ensure the caller has sufficient PaxGold.
-        require(paxGold.balanceOf(msg.sender) >= _value, "Insufficient PaxGold balance");
+function mint(uint256 _value) public {
+    // Ensure the caller has sufficient PaxGold.
+    require(paxGold.balanceOf(msg.sender) >= _value, "Insufficient PaxGold balance");
 
-        // Increase the total supply of HToken.
-        totalSupply += _value;
+    // Increase the total supply of HToken.
+    totalSupply += _value;
 
-        // Increase the total reserve of PaxGold.
-        totalReserve += _value;
+    // Increase the total reserve of PaxGold.
+    totalReserve += _value;
 
-        // Update the value of 1 HToken in PaxGold.
-        value = totalSupply / totalReserve;
+    // Update the value of 1 HToken in PaxGold.
+    value = totalReserve / totalSupply;
 
-        // Transfer the PaxGold from the caller to the contract.
-        paxGold.transferFrom(msg.sender, address(this), _value);
-    }
+    // Transfer the PaxGold from the caller to the contract.
+    paxGold.transferFrom(msg.sender, address(this), _value);
+}
+
 
     // Burns HToken in exchange for PaxGold.
-    function burn(uint256 _value) public {
-        // Ensure the caller has sufficient HToken.
-        require(balanceOf(msg.sender) >= _value, "Insufficient HToken balance");
+function burn(uint256 _value) public {
+    // Ensure the caller has sufficient HToken.
+    require(balanceOf(msg.sender) >= _value, "Insufficient HToken balance");
 
-        // Decrease the total supply of HToken.
-        totalSupply -= _value;
+    // Decrease the total supply of HToken.
+    totalSupply -= _value;
 
-        // Update the value of 1 HToken in PaxGold.
-        value = totalSupply / totalReserve;
+    // Update the value of 1 HToken in PaxGold.
+    value = totalReserve / totalSupply;
 
-        // Transfer the PaxGold from the contract to the caller.
-        paxGold.transfer(msg.sender, _value * value);
+    // Transfer the PaxGold from the contract to the caller.
+    paxGold.transfer(msg.sender, _value * value);
 
-        // Burn the HToken.
-        _burn(msg.sender, _value);
-    }
+    // Burn the HToken.
+    _burn(msg.sender, _value);
+}
+
 
 function transfer(address recipient, uint256 amount) public {
   // Calculate the burn fee.
