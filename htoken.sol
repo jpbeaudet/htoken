@@ -62,20 +62,29 @@ function burn(uint256 _value) public {
     _burn(msg.sender, _value);
 }
 
+// The maximum burn fee, in HToken.
+uint256 public maxBurnFee;
 
 function transfer(address recipient, uint256 amount) public {
   // Calculate the burn fee.
-  uint256 burnAmount = amount.mul(burnFee).div(10000);
+  uint256 burnFee = amount.mul(burnFee).div(10000);
 
-  // Decrease the total supply by the burn amount.
-  totalSupply -= burnAmount;
+  // Check if the burn fee exceeds the maximum burn fee.
+  if (burnFee > maxBurnFee) {
+    // Set the burn fee to the maximum burn fee.
+    burnFee = maxBurnFee;
+  }
+
+  // Decrease the total supply by the burn fee.
+  totalSupply -= burnFee;
 
   // Transfer the remaining amount to the recipient.
-  super.transfer(recipient, amount.sub(burnAmount));
+  super.transfer(recipient, amount.sub(burnFee));
 
   // Burn the fee amount.
-  balanceOf[msg.sender] -= burnAmount;
-  emit Burn(msg.sender, burnAmount);
+  balanceOf[msg.sender] -= burnFee;
+  emit Burn(msg.sender, burnFee);
 }
+
 
 }
