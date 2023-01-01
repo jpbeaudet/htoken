@@ -40,4 +40,23 @@ contract HTokenExchange {
     // Transfer the to HTokens from the exchange contract to the caller.
     hTokens[toTokenAddress].transfer(msg.sender, toAmount);
   }
+   // Returns the number of HToken contracts that are registered for exchange.
+  function getHTokenCount() public view returns (uint256) {
+    return hTokens.length;
+  }
+
+  // Returns the address of the HToken contract with the given index.
+  function getHTokenAddressAtIndex(uint256 index) public view returns (address) {
+    return hTokens[index].address;
+  }
+
+  // Returns the name of the HToken contract with the given index.
+  function getHTokenNameAtIndex(uint256 index) public view returns (string memory) {
+    return hTokens[index].name();
+  }
+
+  // Returns the symbol of the HToken contract with the given index.
+  function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
+    return hTokens[index].symbol();
+  }
 }
