@@ -39,4 +39,38 @@ contract HTokenFactory {
     // Mint the initial supply of HToken.
     hToken.mint(minDeposit);
   }
+    // Returns the total number of HToken contracts that have been created.
+  function getHTokenCount() public view returns (uint256) {
+    return HToken.contract.getTotalSupply();
+  }
+
+  // Returns the address of the HToken contract with the given index.
+  function getHTokenAtIndex(uint256 index) public view returns (address) {
+    return HToken.contract.tokenByIndex(index);
+  }
+
+  // Returns the name of the HToken contract with the given index.
+  function getHTokenNameAtIndex(uint256 index) public view returns (string memory) {
+    // Get the address of the HToken contract.
+    address hTokenAddress = HToken.contract.tokenByIndex(index);
+
+    // Get a reference to the HToken contract.
+    HToken hToken = HToken(hTokenAddress);
+
+    // Return the name of the HToken contract.
+    return hToken.name();
+  }
+
+  // Returns the symbol of the HToken contract with the given index.
+  function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
+    // Get the address of the HToken contract.
+    address hTokenAddress = HToken.contract.tokenByIndex(index);
+
+    // Get a reference to the HToken contract.
+    HToken hToken = HToken(hTokenAddress);
+
+    // Return the symbol of the HToken contract.
+    return hToken.symbol();
+  }
+
 }
