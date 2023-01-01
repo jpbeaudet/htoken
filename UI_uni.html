@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HToken UI</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">HToken UI</h1>
+
+      <div class="balance-container">
+        <p class="balance-label">Your HToken balance:</p>
+        <p class="balance" id="balance"></p>
+      </div>
+
+      <div class="form-container">
+        <form class="mint-form" id="mint-form">
+          <label for="mint-value">Mint value:</label>
+          <input type="text" id="mint-value" />
+          <button type="submit" class="button">Mint</button>
+        </form>
+
+        <form class="burn-form" id="burn-form">
+          <label for="burn-value">Burn value:</label>
+          <input type="text" id="burn-value" />
+          <button type="submit" class="button">Burn</button>
+        </form>
+
+        <form class="transfer-form" id="transfer-form">
+          <label for="transfer-recipient">Recipient:</label>
+          <input type="text" id="transfer-recipient" />
+          <label for="transfer-amount">Amount:</label>
+          <input type="text" id="transfer-amount" />
+          <button type="submit" class="button">Transfer</button>
+        </form>
+      </div>
+
+      <!-- Display error messages -->
+      <p class="error" id="error" style="color: red;"></p>
+    </div>
+
+    <!-- Load the Web3 library -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
