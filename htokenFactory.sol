@@ -38,6 +38,7 @@ contract HTokenFactory {
 
     // Mint the initial supply of HToken.
     hToken.mint(minDeposit);
+    emit HTokenCreated(address(hToken), name, symbol);
   }
     // Returns the total number of HToken contracts that have been created.
   function getHTokenCount() public view returns (uint256) {
@@ -72,5 +73,7 @@ contract HTokenFactory {
     // Return the symbol of the HToken contract.
     return hToken.symbol();
   }
+  event HTokenCreated(address hTokenAddress, string name, string symbol);
+
 
 }
