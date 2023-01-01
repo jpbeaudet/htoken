@@ -12,6 +12,7 @@ contract HTokenExchange {
     require(hToken.owner() == msg.sender, "Only the owner of the HToken contract can register it for exchange");
 
     hTokens[hToken.address] = hToken;
+    emit HTokenUnregistered(hToken.address);
   }
 
   // Unregisters an HToken contract from the exchange.
@@ -20,6 +21,7 @@ contract HTokenExchange {
     require(hTokens[hTokenAddress].owner() == msg.sender, "Only the owner of the HToken contract can unregister it from the exchange");
 
     delete hTokens[hTokenAddress];
+    emit HTokenRegistered(hToken.address, hToken.name(), hToken.symbol());
   }
 
   // Exchanges one HToken for another.
@@ -39,6 +41,7 @@ contract HTokenExchange {
 
     // Transfer the to HTokens from the exchange contract to the caller.
     hTokens[toTokenAddress].transfer(msg.sender, toAmount);
+    emit Exchange(msg.sender, fromAmount, toTokenAddress, toAmount);
   }
    // Returns the number of HToken contracts that are registered for exchange.
   function getHTokenCount() public view returns (uint256) {
@@ -59,4 +62,8 @@ contract HTokenExchange {
   function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
     return hTokens[index].symbol();
   }
+  event HTokenRegistered(address hTokenAddress, string name, string symbol);
+event HTokenUnregistered(address hTokenAddress);
+event Exchange(address fromTokenAddress, uint256 fromAmount, address toTokenAddress, uint256 toAmount);
+
 }
