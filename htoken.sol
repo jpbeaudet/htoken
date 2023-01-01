@@ -42,6 +42,8 @@ function mint(uint256 _value) public {
 
     // Transfer the PaxGold from the caller to the contract.
     paxGold.transferFrom(msg.sender, address(this), _value);
+    // Emit the HTokenMinted event.
+    emit HTokenMinted(msg.sender, _value);
 }
 
 
@@ -61,6 +63,8 @@ function burn(uint256 _value) public {
 
     // Burn the HToken.
     _burn(msg.sender, _value);
+    // Emit the HTokenBurned event.
+    emit HTokenBurned(msg.sender, _value);
 }
 
 // The maximum burn fee, in HToken.
@@ -86,6 +90,6 @@ function transfer(address recipient, uint256 amount) public {
   balanceOf[msg.sender] -= burnFee;
   emit Burn(msg.sender, burnFee);
 }
-
-
+event HTokenMinted(address account, uint256 value);
+event HTokenBurned(address account, uint256 value);
 }
