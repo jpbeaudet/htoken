@@ -61,18 +61,19 @@ contract HToken is SafeERC20 {
         _burn(msg.sender, _value);
     }
 
-    // Transfers HToken from the sender to the recipient.
-    function transfer(address recipient, uint256 amount) public {
-        // Calculate the burn fee.
-        uint256 burnAmount = amount.mul(burnFee).div(10000);
+function transfer(address recipient, uint256 amount) public {
+  // Calculate the burn fee.
+  uint256 burnAmount = amount.mul(burnFee).div(10000);
 
-        // Decrease the total supply by the burn amount.
-        totalSupply -= burnAmount;
+  // Decrease the total supply by the burn amount.
+  totalSupply -= burnAmount;
 
-        // Transfer the remaining amount to the recipient.
-        super.transfer(recipient, amount.sub(burnAmount));
+  // Transfer the remaining amount to the recipient.
+  super.transfer(recipient, amount.sub(burnAmount));
 
-        // Burn the fee amount.
-        _burn(msg.sender, burnAmount);
-    }
+  // Burn the fee amount.
+  balanceOf[msg.sender] -= burnAmount;
+  emit Burn(msg.sender, burnAmount);
+}
+
 }
