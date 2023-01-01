@@ -12,7 +12,7 @@ contract HTokenExchange {
     require(hToken.owner() == msg.sender, "Only the owner of the HToken contract can register it for exchange");
 
     hTokens[hToken.address] = hToken;
-    emit HTokenUnregistered(hToken.address);
+    emit HTokenRegistered(hToken.address, hToken.name(), hToken.symbol());  
   }
 
   // Unregisters an HToken contract from the exchange.
@@ -21,7 +21,8 @@ contract HTokenExchange {
     require(hTokens[hTokenAddress].owner() == msg.sender, "Only the owner of the HToken contract can unregister it from the exchange");
 
     delete hTokens[hTokenAddress];
-    emit HTokenRegistered(hToken.address, hToken.name(), hToken.symbol());
+
+    emit HTokenUnregistered(hToken.address);
   }
 
   // Exchanges one HToken for another.
