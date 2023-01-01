@@ -20,10 +20,11 @@ contract HToken is SafeERC20 {
     // The PaxGold contract.
     PaxGold public paxGold;
 
-    constructor(PaxGold _paxGold, uint256 _burnFee) public {
-        paxGold = _paxGold;
-        burnFee = _burnFee;
-    }
+constructor(PaxGold _paxGold, uint256 _burnFee, uint256 _maxBurnFee) public {
+    paxGold = _paxGold;
+    burnFee = _burnFee;
+    maxBurnFee = _maxBurnFee;
+}
 
     // Mints new HToken in exchange for PaxGold.
 function mint(uint256 _value) public {
