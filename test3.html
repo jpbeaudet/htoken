@@ -86,7 +86,7 @@
     displayBalance();
   }
 
-/ Handle the "Burn" form submission
+// Handle the "Burn" form submission
 async function handleBurnForm(event) {
 // Prevent the form from reloading the page
 event.preventDefault();
@@ -141,7 +141,7 @@ async function displayBalance() {
 let balance = await htoken.methods.balanceOf(account).call();
 
 // Display the balance in the "balance" div
-document.getElementById("balance").innerHTML = Balance: ${balance} HTK;
+document.getElementById("balance").innerHTML = `Balance: ${balance} HTK`;
 }
 
 // Call the displayBalance function when the page loads
