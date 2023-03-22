@@ -15,7 +15,7 @@ const hTokenFactoryAddress = "0x123..."; // Enter the address of your deployed H
 const hTokenFactory = new web3.eth.Contract(hTokenFactoryABI, hTokenFactoryAddress);
 
 // Get all existing HTK tokens and add them as options to the select element
-const select = document.getElementById("htk-select");
+const select = document.getElementById("mint-HTKSelect");
 hTokenFactory.methods.getHTokenCount().call().then(count => {
   for (let i = 0; i < count; i++) {
     hTokenFactory.methods.getHTokenAtIndex(i).call().then(address => {
@@ -31,7 +31,7 @@ hTokenFactory.methods.getHTokenCount().call().then(count => {
 });
 
 // Mint HTK on form submit
-const form = document.getElementById("mint-form");
+const form = document.getElementById("mintHTKForm");
 form.addEventListener("submit", event => {
   event.preventDefault();
   const address = select.value;
