@@ -26,8 +26,8 @@ factoryContract.methods.getHTokenCount().call((error, count) => {
                 factoryContract.methods.getHTokenSymbolAtIndex(i).call((error, htkSymbol) => {
                     htkOptions += `<option value="${htkAddress}">${htkName} (${htkSymbol})</option>`;
                     if (i === count - 1) {
-                        document.getElementById('fromHTKSelect').innerHTML = htkOptions;
-                        document.getElementById('toHTKSelect').innerHTML = htkOptions;
+                        document.getElementById('from-htk').innerHTML = htkOptions;
+                        document.getElementById('to-htk').innerHTML = htkOptions;
                     }
                 });
             });
@@ -36,12 +36,12 @@ factoryContract.methods.getHTokenCount().call((error, count) => {
 });
 
 // Handle form submission
-document.getElementById('swapForm').addEventListener('submit', (event) => {
+document.getElementById('swap-form').addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const fromHTKAddress = document.getElementById('fromHTKSelect').value;
-    const toHTKAddress = document.getElementById('toHTKSelect').value;
-    const amount = document.getElementById('swapAmount').value;
+    const fromHTKAddress = document.getElementById('from-htk').value;
+    const toHTKAddress = document.getElementById('to-htk').value;
+    const amount = document.getElementById('from-amount').value;
 
     // Get HTokenRouter contract instance
     const routerAbi = [
@@ -54,15 +54,15 @@ document.getElementById('swapForm').addEventListener('submit', (event) => {
     routerContract.methods.swapExactHTKForHTK(fromHTKAddress, amount, toHTKAddress).send({from: web3.eth.defaultAccount})
         .on('transactionHash', (hash) => {
             console.log('Transaction hash:', hash);
-            document.getElementById('swapResult').innerHTML = `Transaction submitted with hash: <a href="https://etherscan.io/tx/${hash}" target="_blank">${hash}</a>`;
+            document.getElementById('swap-status').innerHTML = `Transaction submitted with hash: <a href="https://etherscan.io/tx/${hash}" target="_blank">${hash}</a>`;
         })
         .on('confirmation', (confirmationNumber, receipt) => {
             console.log('Confirmation number:', confirmationNumber);
             console.log('Receipt:', receipt);
-            document.getElementById('swapResult').innerHTML = `Transaction confirmed with ${confirmationNumber} confirmations. Gas used: ${receipt.gasUsed}`;
+            document.getElementById('swap-status').innerHTML = `Transaction confirmed with ${confirmationNumber} confirmations. Gas used: ${receipt.gasUsed}`;
         })
         .on('error', (error) => {
             console.log('Transaction error:', error);
-            document.getElementById('swapResult').innerHTML = `Transaction error: ${error.message}`;
+            document.getElementById('swap-status').innerHTML = `Transaction error: ${error.message}`;
         });
 });
