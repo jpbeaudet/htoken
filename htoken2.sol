@@ -29,11 +29,16 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
         _burnFee = _burnFee;
         _maxBurnFee = _maxBurnFee;
     }
+    
+    function _updateValue() private view returns (uint256) {
+        return totalSupply() == 0 ? 0 : _totalReserve.div(totalSupply());
+    }
+
 function mint(uint256 _value) public {
     require(paxGold.balanceOf(msg.sender) >= _value, "Insufficient PaxGold balance");
 
     _totalReserve = _totalReserve.add(_value);
-    value = totalSupply() == 0 ? 0 : _totalReserve.div(totalSupply());
+    value = _updateValue();
 
     uint256 hTokenToMint = _value.div(value);
 
@@ -47,7 +52,7 @@ function mint(uint256 _value) public {
 
         uint256 paxGoldValue = _value.mul(value);
         _totalReserve = _totalReserve.sub(paxGoldValue);
-        value = totalSupply() == 0 ? 0 : _totalReserve.div(totalSupply());
+        value = _updateValue();
 
         paxGold.safeTransfer(msg.sender, paxGoldValue);
         _burn(msg.sender, _value);
