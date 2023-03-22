@@ -1,10 +1,12 @@
-pragma solidity ^0.6.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract HToken is SafeERC20 {
-    uint256 public totalSupply;
+contract HToken is ERC20 {
+    using SafeERC20 for IERC20;
+
     uint256 public totalReserve;
     uint256 public value;
     uint256 public burnFee;
@@ -14,7 +16,13 @@ contract HToken is SafeERC20 {
     event HTokenMinted(address indexed account, uint256 value);
     event HTokenBurned(address indexed account, uint256 value);
 
-    constructor(IERC20 _paxGold, uint256 _burnFee, uint256 _maxBurnFee) public {
+    constructor(
+        IERC20 _paxGold,
+        uint256 _burnFee,
+        uint256 _maxBurnFee,
+        string memory _name,
+        string memory _symbol
+    ) ERC20(_name, _symbol) {
         paxGold = _paxGold;
         burnFee = _burnFee;
         maxBurnFee = _maxBurnFee;
@@ -23,35 +31,33 @@ contract HToken is SafeERC20 {
     function mint(uint256 _value) public {
         require(paxGold.balanceOf(msg.sender) >= _value, "Insufficient PaxGold balance");
 
-        totalSupply += _value;
         totalReserve += _value;
-        value = totalReserve / totalSupply;
+        value = totalReserve / totalSupply();
 
-        paxGold.transferFrom(msg.sender, address(this), _value);
+        paxGold.safeTransferFrom(msg.sender, address(this), _value);
+        _mint(msg.sender, _value);
         emit HTokenMinted(msg.sender, _value);
     }
 
     function burn(uint256 _value) public {
         require(balanceOf(msg.sender) >= _value, "Insufficient HToken balance");
 
-        totalSupply -= _value;
-        value = totalReserve / totalSupply;
+        totalReserve -= _value * value;
+        value = totalReserve / totalSupply();
 
-        paxGold.transfer(msg.sender, _value * value);
+        paxGold.safeTransfer(msg.sender, _value * value);
         _burn(msg.sender, _value);
         emit HTokenBurned(msg.sender, _value);
     }
 
-    function transfer(address recipient, uint256 amount) public override {
-        uint256 calculatedBurnFee = amount.mul(burnFee).div(10000);
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        uint256 calculatedBurnFee = (amount * burnFee) / 10000;
 
         if (calculatedBurnFee > maxBurnFee) {
             calculatedBurnFee = maxBurnFee;
         }
 
-        totalSupply -= calculatedBurnFee;
-        super.transfer(recipient, amount.sub(calculatedBurnFee));
-        balanceOf[msg.sender] -= calculatedBurnFee;
-        emit Burn(msg.sender, calculatedBurnFee);
+        _burn(msg.sender, calculatedBurnFee);
+        return super.transfer(recipient, amount - calculatedBurnFee);
     }
 }
