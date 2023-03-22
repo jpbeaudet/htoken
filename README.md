@@ -1,48 +1,46 @@
-# htoken
-re-enactment of htoken project
-## Overview
-The HToken is an ERC20 token with additional functionality. It starts with a total supply of 0 and can only be "minted" by exchanging PaxGold tokens. The HToken can also be "burned" to receive its corresponding value in PaxGold. When transferring HToken, a small burn fee is applied to the transferred amount.
-## Functions
-####  mint
-Mints new HToken in exchange for PaxGold.
+HToken Protocol
+===============
 
-## Parameters
-_value: The amount of PaxGold to exchange for HToken.
-## Requirements
-The caller must have sufficient PaxGold balance.
-#### burn
-Burns HToken in exchange for PaxGold.
+The HToken Protocol is a decentralized exchange protocol built on the Ethereum blockchain. It allows users to exchange one HToken for another.
 
-## Parameters
-_value: The amount of HToken to burn.
-## Requirements
-The caller must have sufficient HToken balance.
-#### transfer
-Transfers HToken from the sender to the recipient. A burn fee is applied to the transferred amount.
+Overview
+--------
 
-## Parameters
-recipient: The address of the recipient.
-amount: The amount of HToken to transfer.
-## Variables
-totalSupply
-The total supply of HToken.
+The HToken Protocol is composed of three smart contracts:
 
-## totalReserve
-The total reserve of PaxGold.
+1.  `HToken.sol` - The HToken contract represents a specific HToken on the HToken Protocol. It inherits from the `ERC20` contract and provides additional functionality specific to the HToken Protocol.
+2.  `HTokenFactory.sol` - The HTokenFactory contract is responsible for creating new HToken contracts. It stores information about all created HToken contracts and provides methods for querying them.
+3.  `HTokenRouter.sol` - The HTokenRouter contract provides a way to exchange one HToken for another on the HToken Protocol.
 
-## value
-The current value of 1 HToken in PaxGold.
+HToken.sol
+----------
 
-## burnFee
-The burn fee, expressed as a percentage of the transferred amount.
+The HToken contract is a standard ERC20 token with the following additional functionality:
 
-## paxGold
-The PaxGold contract.
+1.  `mint` - Allows users to mint new HToken by depositing PAX Gold. The value of the new HToken is determined by the current value of PAX Gold.
+2.  `burn` - Allows users to burn HToken and receive PAX Gold in return. The value of the burned HToken is determined by the current value of PAX Gold.
+3.  `transfer` - Overrides the `transfer` function from the `ERC20` contract to take a percentage of the transferred amount as a burn fee.
 
-## Constructor
-## HToken
-Creates a new HToken contract.
+HTokenFactory.sol
+-----------------
 
-## Parameters
-_paxGold: The address of the PaxGold contract.
-_burnFee: The burn fee, expressed as a percentage of the transferred amount.
+The HTokenFactory contract is responsible for creating new HToken contracts. It stores information about all created HToken contracts and provides methods for querying them.
+
+HTokenRouter.sol
+----------------
+
+The HTokenRouter contract provides a way to exchange one HToken for another on the HToken Protocol. It uses the `HToken` contract to determine the value of the HToken being exchanged.
+
+Usage
+-----
+
+To use the HToken Protocol, you can follow these steps:
+
+1.  Deploy the `HTokenFactory` contract.
+2.  Call the `createHToken` function on the `HTokenFactory` contract to create a new HToken.
+3.  Use the `HTokenRouter` contract to exchange one HToken for another.
+
+License
+-------
+
+The HToken Protocol is licensed under the MIT License.
