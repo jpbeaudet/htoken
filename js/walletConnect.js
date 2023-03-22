@@ -1,3 +1,7 @@
+document.getElementById("connect-wallet-btn").addEventListener("click", () => {
+  connectWallet();
+});
+
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
