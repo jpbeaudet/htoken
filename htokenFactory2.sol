@@ -33,6 +33,8 @@ contract HTokenFactory {
 
     function createHToken(string memory name, string memory symbol) public {
         require(paxGold.balanceOf(msg.sender) >= minDeposit, "Insufficient PaxGold balance");
+        require(hTokenNameToAddress[name] == address(0), "HToken name already exists"); // Ensure that the name is not already in use
+        require(hTokenSymbolToAddress[symbol] == address(0), "HToken symbol already exists"); // Ensure that the symbol is not already in use
 
         HToken hToken = new HToken(paxGold, burnFee, maxBurnFee, name, symbol);
         paxGold.transferFrom(msg.sender, address(hToken), minDeposit);
