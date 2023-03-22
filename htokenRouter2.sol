@@ -23,15 +23,16 @@ contract HTokenRouter {
         // Calculate the paxGold equivalent value of the fromAmount
         uint256 paxGoldValue = fromToken.value().mul(fromAmount);
 
-        // Approve the router to spend the necessary amount of fromToken
+        // Transfer the fromHTK from the caller to the router, and approve the router to spend the fromAmount
         fromToken.transferFrom(msg.sender, address(this), fromAmount);
         fromToken.approve(address(fromToken), fromAmount);
 
         // Burn the fromToken and retrieve the paxGoldValue
         fromToken.burn(fromAmount);
 
-        // Approve the router to spend the necessary amount of paxGold
+        // Transfer the paxGold to the toHTK contract and approve the router to spend the necessary amount of paxGold on behalf of the toHTK contract
         IERC20 paxGold = fromToken.paxGold();
+        paxGold.transfer(toHTK, paxGoldValue);
         paxGold.approve(address(toToken), paxGoldValue);
 
         // Mint the new toTokens using the paxGoldValue and send them to the caller
