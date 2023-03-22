@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>HToken Test</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-Dziy5+pb+dN1Nn0C0+Mp6hekZU6ua7a6mG5LrBWBQ9yUksWzXQDQ2Y6RS+Spa4E"
+      crossorigin="anonymous"
+    />
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.3/dist/umd/popper.min.js"
+      integrity="sha384-q5Q5JVPclV7htu5+rVo8V7PY2f89R1+Yz54EJeIKCw7XYf3oeh+GWKC9J9bEUVUr"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+      integrity="sha384-9V7pccatAchDPVx+CdmmKPHrnLUrTWrTzvbv7VW0q8X+7VgBmJxvF+wzLJ8rTQr/"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Import JavaScript files -->
+    <script src="js/mint.js"></script>
+    <script src="js/burn.js"></script>
+    <script src="js/transfer.js"></script>
+    <script src="js/swap.js"></script>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1>HToken Test</h1>
+      <p>This page allows you to test the HToken smart contract.</p>
+
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <h2>Mint HToken</h2>
+          <form id="mint-form">
+            <div class="form-group">
+              <label for="mint-amount">Amount to mint</label>
+              <input
+                type="number"
+                class="form-control"
+                id="mint-amount"
+                name="mint-amount"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Mint</button>
+          </form>
+        </div>
+<div class="col-md-6">
+  <h2>Burn HToken</h2>
+  <form id="burn-form">
+    <div class="form-group">
+      <label for="burn-amount">Amount to burn</label>
+      <input
+        type="number"
+        class="form-control"
+        id="burn-amount"
+        name="burn-amount"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Burn</button>
+  </form>
+</div>
