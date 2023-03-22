@@ -13,6 +13,8 @@ contract HTokenFactory {
     mapping(uint256 => address) public hTokenIndexToAddress;
     mapping(address => string) public hTokenName;
     mapping(address => string) public hTokenSymbol;
+    mapping(string => address) public hTokenNameToAddress;
+    mapping(string => address) public hTokenSymbolToAddress;
     uint256 public hTokenCount;
 
     event HTokenCreated(address hTokenAddress, string name, string symbol);
@@ -39,6 +41,8 @@ contract HTokenFactory {
         hTokenIndexToAddress[index] = address(hToken);
         hTokenName[address(hToken)] = name;
         hTokenSymbol[address(hToken)] = symbol;
+        hTokenNameToAddress[name] = address(hToken);
+        hTokenSymbolToAddress[symbol] = address(hToken);
         hTokenCount++;
         emit HTokenCreated(address(hToken), name, symbol);
     }
@@ -60,5 +64,13 @@ contract HTokenFactory {
     function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
         address hTokenAddress = getHTokenAtIndex(index);
         return hTokenSymbol[hTokenAddress];
+    }
+
+    function getHTokenByName(string memory name) public view returns (address) {
+        return hTokenNameToAddress[name];
+    }
+
+    function getHTokenBySymbol(string memory symbol) public view returns (address) {
+        return hTokenSymbolToAddress[symbol];
     }
 }
