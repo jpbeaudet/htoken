@@ -29,17 +29,18 @@ contract HToken is ERC20 {
         _burnFee = _burnFee;
         _maxBurnFee = _maxBurnFee;
     }
+function mint(uint256 _value) public {
+    require(paxGold.balanceOf(msg.sender) >= _value, "Insufficient PaxGold balance");
 
-    function mint(uint256 _value) public {
-        require(paxGold.balanceOf(msg.sender) >= _value, "Insufficient PaxGold balance");
+    _totalReserve = _totalReserve.add(_value);
+    value = totalSupply() == 0 ? 0 : _totalReserve.div(totalSupply());
 
-        _totalReserve = _totalReserve.add(_value);
-        value = totalSupply() == 0 ? 0 : _totalReserve.div(totalSupply());
+    uint256 hTokenToMint = _value.div(value);
 
-        paxGold.safeTransferFrom(msg.sender, address(this), _value);
-        _mint(msg.sender, _value);
-        emit HTokenMinted(msg.sender, _value);
-    }
+    paxGold.safeTransferFrom(msg.sender, address(this), _value);
+    _mint(msg.sender, hTokenToMint);
+    emit HTokenMinted(msg.sender, hTokenToMint);
+}
 
     function burn(uint256 _value) public {
         require(balanceOf(msg.sender) >= _value, "Insufficient HToken balance");
