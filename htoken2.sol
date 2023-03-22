@@ -15,8 +15,8 @@ contract HToken is ERC20 {
     uint256 private _maxBurnFee;
     IERC20 public paxGold;
 
-    event HTokenMinted(address indexed account, uint256 value);
-    event HTokenBurned(address indexed account, uint256 value);
+event HTokenMinted(address indexed tokenAddress, string name, string symbol, address indexed account, uint256 value);
+event HTokenBurned(address indexed tokenAddress, string name, string symbol, address indexed account, uint256 value);
 
     constructor(
         IERC20 _paxGold,
@@ -39,7 +39,7 @@ function mint(uint256 _value) public {
 
     paxGold.safeTransferFrom(msg.sender, address(this), _value);
     _mint(msg.sender, hTokenToMint);
-    emit HTokenMinted(msg.sender, hTokenToMint);
+    emit HTokenMinted(address(this), name(), symbol(), msg.sender, hTokenToMint);
 }
 
     function burn(uint256 _value) public {
@@ -51,7 +51,7 @@ function mint(uint256 _value) public {
 
         paxGold.safeTransfer(msg.sender, paxGoldValue);
         _burn(msg.sender, _value);
-        emit HTokenBurned(msg.sender, _value);
+        emit HTokenBurned(address(this), name(), symbol(), msg.sender, _value);
     }
 
     function transfer(address recipient, uint256 amount) public override returns (bool) {
