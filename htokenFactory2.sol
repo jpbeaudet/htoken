@@ -10,7 +10,10 @@ contract HTokenFactory {
     uint256 public maxBurnFee;
     uint256 public minDeposit;
 
-    address[] public hTokens;
+    mapping(uint256 => address) public hTokenIndexToAddress;
+    mapping(address => string) public hTokenName;
+    mapping(address => string) public hTokenSymbol;
+    uint256 public hTokenCount;
 
     event HTokenCreated(address hTokenAddress, string name, string symbol);
 
@@ -32,28 +35,30 @@ contract HTokenFactory {
         HToken hToken = new HToken(paxGold, burnFee, maxBurnFee, name, symbol);
         paxGold.transferFrom(msg.sender, address(hToken), minDeposit);
         hToken.mint(minDeposit);
-        hTokens.push(address(hToken));
+        uint256 index = hTokenCount;
+        hTokenIndexToAddress[index] = address(hToken);
+        hTokenName[address(hToken)] = name;
+        hTokenSymbol[address(hToken)] = symbol;
+        hTokenCount++;
         emit HTokenCreated(address(hToken), name, symbol);
     }
 
     function getHTokenCount() public view returns (uint256) {
-        return hTokens.length;
+        return hTokenCount;
     }
 
     function getHTokenAtIndex(uint256 index) public view returns (address) {
-        require(index < hTokens.length, "Index out of bounds");
-        return hTokens[index];
+        require(index < hTokenCount, "Index out of bounds");
+        return hTokenIndexToAddress[index];
     }
 
     function getHTokenNameAtIndex(uint256 index) public view returns (string memory) {
         address hTokenAddress = getHTokenAtIndex(index);
-        HToken hToken = HToken(hTokenAddress);
-        return hToken.name();
+        return hTokenName[hTokenAddress];
     }
 
     function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
         address hTokenAddress = getHTokenAtIndex(index);
-        HToken hToken = HToken(hTokenAddress);
-        return hToken.symbol();
+        return hTokenSymbol[hTokenAddress];
     }
 }
