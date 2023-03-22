@@ -110,51 +110,24 @@
 
       <hr />
 
-<div class="col-md-6">
-  <h2>Swap HToken</h2>
-  <form id="swap-form">
-    <div class="form-group">
-      <label for="from-htk">From HToken</label>
-      <select class="form-control" id="from-htk">
-        <option value="">Select an HToken</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="from-amount">Amount to swap</label>
-      <input
-        type="number"
-        class="form-control"
-        id="from-amount"
-        placeholder="Enter amount"
-        min="0"
-        step="0.01"
-        required
-      />
-    </div>
-    <div class="form-group">
-      <label for="to-htk">To HToken</label>
-      <select class="form-control" id="to-htk">
-        <option value="">Select an HToken</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="to-amount">Expected amount to receive</label>
-      <input
-        type="number"
-        class="form-control"
-        id="to-amount"
-        placeholder="Expected amount to receive"
-        min="0"
-        step="0.01"
-        required
-        disabled
-      />
-    </div>
-    <button type="submit" class="btn btn-primary">Swap</button>
-  </form>
-  <br />
+<form id="swap-form">
+  <div>
+    <label for="from-htk">From HToken:</label>
+    <select id="from-htk" name="from-htk"></select>
+  </div>
+  <div>
+    <label for="to-htk">To HToken:</label>
+    <select id="to-htk" name="to-htk"></select>
+  </div>
+  <div>
+    <label for="from-amount">Amount:</label>
+    <input type="number" id="from-amount" name="from-amount" required>
+  </div>
+  <div>
+    <button type="submit">Swap</button>
+  </div>
   <div id="swap-status"></div>
-</div>
+</form>
 
 <!-- jQuery and Bootstrap JS -->
     <script
