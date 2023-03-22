@@ -26,7 +26,7 @@ factoryContract.methods.getHTokenCount().call((error, count) => {
                 factoryContract.methods.getHTokenSymbolAtIndex(i).call((error, htkSymbol) => {
                     htkOptions += `<option value="${htkAddress}">${htkName} (${htkSymbol})</option>`;
                     if (i === count - 1) {
-                        document.getElementById('htkSelect').innerHTML = htkOptions;
+                        document.getElementById('burnHTKSelect').innerHTML = htkOptions;
                     }
                 });
             });
@@ -35,11 +35,11 @@ factoryContract.methods.getHTokenCount().call((error, count) => {
 });
 
 // Handle form submission
-document.getElementById('burnForm').addEventListener('submit', (event) => {
+document.getElementById('burnHTKForm').addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const htkAddress = document.getElementById('htkSelect').value;
-    const amount = document.getElementById('burnAmount').value;
+    const htkAddress = document.getElementById('burnHTKSelect').value;
+    const amount = document.getElementById('burnHTKAmount').value;
 
     // Get HToken contract instance
     const htkAbi = [
@@ -51,15 +51,15 @@ document.getElementById('burnForm').addEventListener('submit', (event) => {
     htkContract.methods.burn(amount).send({from: web3.eth.defaultAccount})
         .on('transactionHash', (hash) => {
             console.log('Transaction hash:', hash);
-            document.getElementById('burnResult').innerHTML = `Transaction submitted with hash: <a href="https://etherscan.io/tx/${hash}" target="_blank">${hash}</a>`;
+            document.getElementById('burnHTKResult').innerHTML = `Transaction submitted with hash: <a href="https://etherscan.io/tx/${hash}" target="_blank">${hash}</a>`;
         })
         .on('confirmation', (confirmationNumber, receipt) => {
             console.log('Confirmation number:', confirmationNumber);
             console.log('Receipt:', receipt);
-            document.getElementById('burnResult').innerHTML = `Transaction confirmed with ${confirmationNumber} confirmations. Gas used: ${receipt.gasUsed}`;
+            document.getElementById('burnHTKResult').innerHTML = `Transaction confirmed with ${confirmationNumber} confirmations. Gas used: ${receipt.gasUsed}`;
         })
         .on('error', (error) => {
             console.log('Transaction error:', error);
-            document.getElementById('burnResult').innerHTML = `Transaction error: ${error.message}`;
+            document.getElementById('burnHTKResult').innerHTML = `Transaction error: ${error.message}`;
         });
 });
