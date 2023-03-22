@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HToken Swap</title>
+</head>
+<body>
+
+<!-- Add the following HTML to the "balance-container" div to display the HToken balance -->
+
+<div id="balance-container">
+  <p>HToken balance: <span id="balance"></span></p>
+</div>
+
+<!-- Add the following HTML to the "form-container" div to display the Mint, Burn, Transfer, and Swap forms -->
+
+<div id="form-container">
+  <form class="mint-form" id="mint-form">
+    <label for="mint-value">Mint value:</label>
+    <input type="text" id="mint-value" />
+    <button type="submit" class="button">Mint</button>
+  </form>
+
+  <form class="burn-form" id="burn-form">
+    <label for="burn-value">Burn value:</label>
+    <input type="text" id="burn-value" />
+    <button type="submit" class="button">Burn</button>
+  </form>
+
+  <form class="transfer-form" id="transfer-form">
+    <label for="transfer-recipient">Recipient:</label>
+    <input type="text" id="transfer-recipient" />
+    <label for="transfer-amount">Amount:</label>
+    <input type="text" id="transfer-amount" />
+    <button type="submit" class="button">Transfer</button>
+  </form>
+
+  <form class="swap-form" id="swap-form">
+    <label for="fromHTK">From:</label>
+    <select id="fromHTK"></select>
+    <label for="toHTK">To:</label>
+    <select id="toHTK"></select>
+    <label for="fromAmount">Amount:</label>
+    <input type="text" id="fromAmount" />
+    <button type="submit" class="button">Swap</button>
+  </form>
+</div>
+
+<!-- Add the following HTML to the "error-container" div to display error messages -->
+
+<div id="error-container">
+  <p id="error"></p>
+</div>
+
+<!-- Add the following JavaScript to the script tag to handle Mint, Burn, Transfer, and Swap forms -->
+
+<script>
+  let web3, account, htoken, factory, router;
+
+  // Add event listeners to handle the Mint, Burn, Transfer, and Swap forms
+  document.getElementById("mint-form").addEventListener("submit", handleMintForm);
+  document.getElementById("burn-form").addEventListener("submit", handleBurnForm);
+  document.getElementById("transfer-form").addEventListener("submit", handleTransferForm);
+  document.getElementById("swap-form").addEventListener("submit", handleSwapForm);
+
+  // Display the balance of the current account and HToken balance
+  async function displayBalance() {
+    // Get the account balance
+    let balance = await web3.eth.getBalance(account);
+    document.getElementById("account-balance").innerHTML = web3.utils.fromWei(balance, "ether");
+
+    // Get the HToken balance
+    let htokenBalance = await htoken.methods.balanceOf(account).call();
+    document.getElementById("htoken-balance").innerHTML = web3.utils.fromWei(htokenBalance, "ether");
+    
+    // Display the HToken list for swapping
+    displayHTokenList();
+  }
+
+  // Handle the "Mint" form submission
+  async function handleMintForm(event) {
+    // Prevent the form from reloading the page
+    event.preventDefault();
+
+    // Get the mint value from the form
+    let value = document.getElementById("mint-value").value;
+
+    // Call the mint function on the HToken contract
+    try {
+      await htoken.methods.mint(value).send({ from: account });
+    } catch (error) {
+      // Display the error message
+      document.getElementById("error").innerHTML = error.message;
+      return;
+    }
+
+    // Clear the error message
+    document.getElementById("error").innerHTML = "";
+
+    // Display the updated balance
+    displayBalance();
+  }
+
+  // Handle the "Burn" form submission
+  async function handleBurnForm(event) {
+    // Prevent the form from reloading the page
+    event.preventDefault();
+
+    // Get the burn value from the form
+    let value = document.getElementById("burn-value").value;
+
+    // Call the burn function on the HToken contract
+    try {
+      await htoken.methods.burn(value).send({ from: account });
+    } catch (error) {
+      // Display the error message
+      document.getElementById("error").innerHTML = error.message;
+      return;
+    }
+
+    // Clear the error message
+    document.getElementById("error").innerHTML = "";
+
+    // Display the updated balance
+    displayBalance();
+  }
+
+  // Handle the "Transfer" form submission
+  async function handleTransferForm(event) {
+    // Prevent the form from reloading the page
+    event.preventDefault();
+
+    // Get the recipient and transfer amount from the form
+    let recipient = document.getElementById("transfer-recipient").value;
+    let amount = document.getElementById("transfer-amount").value;
+
+    // Call the transfer function on the HToken contract
+    try {
+      await htoken.methods.transfer(recipient, amount).send({ from: account });
+    } catch (error) {
+      // Display the error message
+      document.getElementById("error").innerHTML = error.message;
+      return;
+    }
+
+    // Clear the error message
+    document.getElementById("error").innerHTML = "";
+
+    // Display the updated balance
+    displayBalance();
+  }
+
+  // Handle the "Swap" form submission
+  async function handleSwapForm(event) {
+    // Prevent the form from reloading the page
+    event.preventDefault();
+
+// Get the selected input values from the form
+let fromHTKAddress = document.getElementById("fromHTK").value;
+let toHTKAddress = document.getElementById("toHTK").value;
+let fromAmount = document.getElementById("fromAmount").value;
+
+// Get the HToken and WETH contract instances
+let fromHTK = new web3.eth.Contract(contractABI, fromHTKAddress);
+let toHTK = new web3.eth.Contract(contractABI, toHTKAddress);
+let weth = new web3.eth.Contract(wethABI, wethAddress);
+
+// Get the HToken and WETH token decimals
+let fromHTKDecimals = await fromHTK.methods.decimals().call();
+let toHTKDecimals = await toHTK.methods.decimals().call();
+let wethDecimals = await weth.methods.decimals().call();
+
+// Calculate the exchange rate and amounts
+let fromHTKExchangeRate = await router.methods.getExchangeRate(fromHTKAddress, toHTKAddress).call();
+let toHTKExchangeRate = await router.methods.getExchangeRate(toHTKAddress, fromHTKAddress).call();
+let wethExchangeRate = await router.methods.getExchangeRate(wethAddress, toHTKAddress).call();
+
+let fromAmountInWei = web3.utils.toWei(fromAmount, "ether");
+let fromAmountInBaseUnit = fromAmountInWei / (10 ** fromHTKDecimals);
+let toAmountInBaseUnit = fromAmountInBaseUnit * fromHTKExchangeRate;
+let toAmountInWei = toAmountInBaseUnit * (10 ** toHTKDecimals);
+
+let wethAmountInWei = toAmountInBaseUnit / wethExchangeRate * (10 ** wethDecimals);
+let wethAmountInBaseUnit = wethAmountInWei / (10 ** 18);
+
+// Approve the Router to spend the fromHTK token
+try {
+await fromHTK.methods.approve(router.options.address, fromAmountInWei).send({ from: account });
+} catch (error) {
+// Display the error message
+document.getElementById("error").innerHTML = error.message;
+return;
+}
+
+// Swap the tokens
+try {
+await router.methods.swapExactTokensForTokens(
+fromAmountInWei,
+toAmountInWei,
+[fromHTKAddress, wethAddress, toHTKAddress],
+account,
+Math.floor(Date.now() / 1000) + 60 * 20 // 20 minutes from now
+).send({ from: account });
+} catch (error) {
+// Display the error message
+document.getElementById("error").innerHTML = error.message;
+return;
+}
+
+// Display the updated balances
+displayBalance();
+}
+
+// Display the list of available HToken tokens
+async function displayHTokenList() {
+// Get the list of HToken tokens from the HTokenFactory contract
+let tokenAddresses = await factory.methods.getAllHTokens().call();
+
+// Get the select elements from the "Swap" form
+let fromHTKSelect = document.getElementById("fromHTK");
+let toHTKSelect = document.getElementById("toHTK");
+
+// Remove all existing options from the select elements
+fromHTKSelect.innerHTML = "";
+toHTKSelect.innerHTML = "";
+
+// Add a "Select Token" option to both select elements
+document.getElementById("fromHTK").innerHTML += <option value="">Select Token</option>;
+document.getElementById("toHTK").innerHTML += <option value="">Select Token</option>;
+
+// Get the available tokens from the factory contract
+let tokens = await factory.methods.getAllTokens().call();
+
+// Add each token to the select elements
+for (let i = 0; i < tokens.length; i++) {
+let token = tokens[i];
+
+// Add the token to the "from" select element
+document.getElementById("fromHTK").innerHTML += <option value="${token}">${token}</option>;
+
+// Add the token to the "to" select element, except for the selected token
+if (token !== fromToken) {
+document.getElementById("toHTK").innerHTML += <option value="${token}">${token}</option>;
+}
+}
+
+// Set the selected token for the "from" select element
+document.getElementById("fromHTK").value = fromToken;
+
+// Set the selected token for the "to" select element
+document.getElementById("toHTK").value = toToken;
+
+// Get the selected input values from the form
+let fromHTK = document.getElementById("fromHTK").value;
+let toHTK = document.getElementById("toHTK").value;
+let fromAmount = document.getElementById("fromAmount").value;
+
+// Check if the user selected the same token for both select elements
+if (fromHTK === toHTK) {
+document.getElementById("error").innerHTML = "Cannot swap a token for itself";
+return;
+}
+
+// Get the addresses and ABI for the selected tokens
+let fromTokenAddress = await factory.methods.getTokenAddress(fromHTK).call();
+let fromTokenABI = await factory.methods.getTokenABI(fromHTK).call();
+let toTokenAddress = await factory.methods.getTokenAddress(toHTK).call();
+let toTokenABI = await factory.methods.getTokenABI(toHTK).call();
+
+// Create contract objects for the selected tokens
+let fromTokenContract = new web3.eth.Contract(fromTokenABI, fromTokenAddress);
+let toTokenContract = new web3.eth.Contract(toTokenABI, toTokenAddress);
+
+// Get the exchange rate for the tokens
+let exchangeRate = await router.methods.getExchangeRate(fromTokenAddress, toTokenAddress, fromAmount).call();
+
+// Swap the tokens using the HTokenRouter contract
+try {
+await router.methods.swap(fromTokenAddress, toTokenAddress, fromAmount, exchangeRate).send({ from: account });
+} catch (error) {
+// Display the error message
+document.getElementById("error").innerHTML = error.message;
+return;
+}
+
+// Clear the error message
+document.getElementById("error").innerHTML = "";
+
+// Display the updated balance
+displayBalance();
+  // Display the updated balance and list of tokens
+async function displayBalanceAndTokens() {
+// Get the balance of the current account
+let balance = await htoken.methods.balanceOf(account).call();
+
+// Display the balance in the "balance" div
+document.getElementById("balance").innerHTML = Balance: ${balance} HTK;
+
+// Clear the select options
+document.getElementById("fromHTK").innerHTML = "";
+document.getElementById("toHTK").innerHTML = "";
+
+// Add a "Select Token" option to both select elements
+let selectOption = document.createElement("option");
+selectOption.text = "Select Token";
+selectOption.value = "";
+document.getElementById("fromHTK").add(selectOption);
+document.getElementById("toHTK").add(selectOption.cloneNode(true));
+
+// Get the list of tokens from the factory contract
+let tokenList = await factory.methods.getHTokenList().call();
+
+// Add each token to the select elements
+for (let i = 0; i < tokenList.length; i++) {
+let tokenAddress = tokenList[i];
+let token = new web3.eth.Contract(HTokenABI, tokenAddress);
+let symbol = await token.methods.symbol().call();
+  let option = document.createElement("option");
+option.text = symbol;
+option.value = tokenAddress;
+document.getElementById("fromHTK").add(option);
+
+let clone = option.cloneNode(true);
+document.getElementById("toHTK").add(clone);
+}
+}
+
+// Call the displayBalanceAndTokens function when the page loads
+window.onload = function() {
+init();
+displayBalanceAndTokens();
+};
+
+// Update the account balance and HToken balance
+async function updateBalances() {
+// Get the account balance
+let balance = await web3.eth.getBalance(account);
+document.getElementById("account-balance").innerHTML = web3.utils.fromWei(balance, "ether");
+
+// Get the HToken balance
+let htokenBalance = await htoken.methods.balanceOf(account).call();
+document.getElementById("htoken-balance").innerHTML = web3.utils.fromWei(htokenBalance, "ether");
+
+// Update the list of tokens
+displayHTokenList();
+}
+
+// Handle the "Connect Wallet" button click
+document.getElementById("connect-wallet").addEventListener("click", async function() {
+// Check if the user is already connected to a wallet
+if (typeof web3 !== "undefined") {
+// Get the current account
+account = (await web3.eth.getAccounts())[0];
+// Update the account and HToken balances
+updateBalances();
+} else {
+// If not, connect to a wallet
+await window.ethereum.request({ method: 'eth_requestAccounts' });
+// Get the current account
+account = (await web3.eth.getAccounts())[0];
+// Initialize the HToken contract object
+htoken = new web3.eth.Contract(HTokenABI, htokenAddress);
+// Initialize the HTokenFactory contract object
+factory = new web3.eth.Contract(HTokenFactoryABI, factoryAddress);
+// Initialize the HTokenRouter contract object
+router = new web3.eth.Contract(HTokenRouterABI, routerAddress);
+// Update the account and HToken balances
+updateBalances();
+}
+});
+
+// Handle the "Swap" form submission
+async function handleSwapForm(event) {
+// Prevent the form from reloading the page
+event.preventDefault();
+
+// Get the selected input values from the form
+let fromToken = document.getElementById("fromHTK").value;
+let toToken = document.getElementById("toHTK").value;
+let fromAmount = document.getElementById("fromAmount").value;
+
+// Get the contract addresses of the selected tokens
+let fromTokenAddress = await factory.methods.getTokenAddress(fromToken).call();
+let toTokenAddress = await factory.methods.getTokenAddress(toToken).call();
+
+// Get the router address
+let routerAddress = await factory.methods.getRouter().call();
+
+// Get the amount of the toToken expected to receive
+let expectedAmount = await router.methods.getAmountOut(fromAmount, fromTokenAddress, toTokenAddress).call();
+
+// Call the swap function on the HTokenRouter contract
+try {
+await router.methods.swap(fromAmount, expectedAmount, fromTokenAddress, toTokenAddress, account, Date.now() + 1000 * 60 * 10 /* 10 minutes */).send({ from: account });
+} catch (error) {
+// Display the error message
+document.getElementById("error").innerHTML = error.message;
+return;
+}
+
+// Clear the error message
+document.getElementById("error").innerHTML = "";
+
+// Display the updated balance
+displayBalance();
+}
+
+// Add the following JavaScript to the script tag to handle displaying the list of HTokens
+async function displayHTokenList() {
+// Get the list of HToken names
+let htokenNames = await factory.methods.getHTokenNames().call();
+
+// Get the "fromHTK" and "toHTK" select elements
+let fromSelect = document.getElementById("fromHTK");
+let toSelect = document.getElementById("toHTK");
+
+// Add a "Select Token" option to both select elements
+let selectTokenOption = document.createElement("option");
+selectTokenOption.text = "Select Token";
+selectTokenOption.disabled = true;
+selectTokenOption.selected = true;
+fromSelect.add(selectTokenOption);
+toSelect.add(selectTokenOption.cloneNode(true));
+
+// Add each HToken name to the select elements
+for (let i = 0; i < htokenNames.length; i++) {
+let htokenName = htokenNames[i];
+  // Create an option element with the HToken name as the text and the HToken name as the value
+let option = document.createElement("option");
+option.text = htokenName;
+option.value = htokenName;
+
+// Add the option to both select elements
+fromSelect.add(option);
+toSelect.add(option.cloneNode(true));
+}
+}
+
+// Handle the "Connect Wallet" button click
+document.getElementById("connect-wallet").addEventListener("click", async function() {
+// Check if the user is already connected to a wallet
+if (typeof web3 !== "undefined") {
+// Get the current account
+account = (await web3.eth.getAccounts())[0];
+// Update the account and HToken balances
+updateBalances();
+} else {
+// If not, connect to a wallet
+await window.ethereum.request({ method: 'eth_requestAccounts' });
+// Get the current account
+account = (await web3.eth.getAccounts())[0];
+// Initialize the HToken contract object
+htoken = new web3.eth.Contract(contractABI, contractAddress);
+// Initialize the HTokenFactory contract object
+factory = new web3.eth.Contract(factoryABI, factoryAddress);
+
+// Initialize the HTokenRouter contract object
+router = new web3.eth.Contract(routerABI, routerAddress);
+
+// Add the available tokens to the "fromHTK" and "toHTK" select elements
+async function displayHTokenList() {
+  // Get the list of available tokens from the HTokenFactory contract
+  let tokens = await factory.methods.getAllTokens().call();
+
+  // Create an option element for each token and add it to the "fromHTK" and "toHTK" select elements
+  for (let i = 0; i < tokens.length; i++) {
+    let token = new web3.eth.Contract(tokenABI, tokens[i]);
+
+    // Get the symbol of the token
+    let symbol = await token.methods.symbol().call();
+
+    // Create an option element for the token
+    let option = document.createElement("option");
+    option.value = tokens[i];
+    option.innerHTML = symbol;
+
+    // Add the option element to the "fromHTK" and "toHTK" select elements
+    document.getElementById("fromHTK").appendChild(option.cloneNode(true));
+    document.getElementById("toHTK").appendChild(option);
+  }
+}
+
+// Handle the "Swap" form submission
+async function handleSwapForm(event) {
+  // Prevent the form from reloading the page
+  event.preventDefault();
+
+  // Get the selected input values from the form
+  let fromHTKAddress = document.getElementById("fromHTK").value;
+  let toHTKAddress = document.getElementById("toHTK").value;
+  let fromAmount = document.getElementById("fromAmount").value;
+
+  // Get the HToken and token objects for the selected tokens
+  let fromHTK = new web3.eth.Contract(tokenABI, fromHTKAddress);
+  let toHTK = new web3.eth.Contract(tokenABI, toHTKAddress);
+
+  // Get the amount of the selected token held by the current account
+  let fromHTKBalance = await fromHTK.methods.balanceOf(account).call();
+
+  // Check if the current account has enough of the selected token to make the swap
+  if (fromAmount > fromHTKBalance) {
+    document.getElementById("error").innerHTML = "Insufficient balance";
+    return;
+  }
+
+  // Approve the Router contract to spend the selected token
+  try {
+    await fromHTK.methods.approve(routerAddress, fromAmount).send({ from: account });
+  } catch (error) {
+    document.getElementById("error").innerHTML = error.message;
+    return;
+  }
+
+  // Get the input and output token paths for the swap
+  let inputPath = [fromHTKAddress, WETHAddress, toHTKAddress];
+  let outputPath = [toHTKAddress, WETHAddress, fromHTKAddress];
+
+  // Call the swap function on the Router contract
+  try {
+    await router.methods.swapExactTokensForTokens(
+      fromAmount,
+      0,
+      inputPath,
+      account,
+      Math.floor(Date.now() / 1000) + 60 * 10 // Expires after 10 minutes
+    ).send({ from: account });
+  } catch (error) {
+    document.getElementById("error").innerHTML = error.message;
+    return;
+  }
+
+  // Clear the error message
+  document.getElementById("error").innerHTML = "";
+
+  // Display the updated balances
+  displayBalance();
+}
