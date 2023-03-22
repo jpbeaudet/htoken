@@ -2,14 +2,29 @@
 pragma solidity ^0.8.0;
 
 import "./HToken.sol";
+import "./HTokenFactory.sol";
 
 contract HTokenRouter {
+    HTokenFactory public factory;
+
+    constructor(HTokenFactory _factory) {
+        factory = _factory;
+    }
+
+    function isValidHTK(address htk) public view returns (bool) {
+        return factory.getHTokenByName(factory.hTokenName(htk)) == htk;
+    }
+
     // Swaps one HToken for another
     function swapExactHTKForHTK(
         address fromHTK,
         uint256 fromAmount,
         address toHTK
     ) public {
+        // Ensure that the fromHTK and toHTK are valid HToken contracts
+        require(isValidHTK(fromHTK), "fromHTK is not a valid HToken contract");
+        require(isValidHTK(toHTK), "toHTK is not a valid HToken contract");
+
         // Get the instances of the HToken contracts
         HToken fromToken = HToken(fromHTK);
         HToken toToken = HToken(toHTK);
