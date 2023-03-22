@@ -39,6 +39,7 @@ function createHToken(string memory name, string memory symbol) public {
     HToken hToken = new HToken(paxGold, burnFee, maxBurnFee, name, symbol);
     require(address(hToken) != address(0), "Invalid HToken contract address"); // Ensure that the HToken contract was successfully created
     require(hToken.totalSupply() > 0, "Invalid HToken total supply"); // Ensure that the HToken contract has a non-zero total supply
+    require(hToken.name() == name && hToken.symbol() == symbol, "HToken name and symbol do not match parameters");
 
     paxGold.transferFrom(msg.sender, address(hToken), minDeposit);
     hToken.mint(minDeposit);
