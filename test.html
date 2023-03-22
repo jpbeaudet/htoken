@@ -283,6 +283,18 @@
 
     // Get the current account
     account = (await web3.eth.getAccounts())[0];
+    router = new web3.eth.Contract(routerABI, routerAddress);
+  }
+
+  // Call the displayBalance function when the page loads
+  window.onload = function() {
+    init();
+    displayBalance();
+    displayHTokenList();
+  };
+</script>
+</body>
+</html>
 
     // Initialize the HToken contract object
     htoken = new web3.eth.Contract(htokenABI, htokenAddress);
