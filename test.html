@@ -59,43 +59,57 @@
 
       <hr />
 
-      <!-- Mint HToken -->
-      <div class="row">
-        <div class="col-md-6">
-          <h2>Mint HToken</h2>
-          <form id="mint-form">
-            <div class="form-group">
-              <label for="mint-amount">Amount to mint</label>
-              <input
-                type="number"
-                class="form-control"
-                id="mint-amount"
-              />
-            </div>
-            <button type="submit" class="btn btn-primary">Mint HToken</button>
-          </form>
-        </div>
-
-        <!-- Burn HToken -->
-        <div class="col-md-6">
-          <h2>Burn HToken</h2>
-          <form id="burn-form">
-            <div class="form-group">
-              <label for="burn-amount">Amount to burn</label>
-              <input
-                type="number"
-                class="form-control"
-                id="burn-amount"
-              />
-            </div>
-            <button type="submit" class="btn btn-primary">Burn HToken</button>
-          </form>
-        </div>
+<!-- Mint HToken -->
+<div class="row">
+  <div class="col-md-6">
+    <h2>Mint HToken</h2>
+    <form id="mint-form">
+      <div class="form-group">
+        <label for="htk-select">Select an HToken</label>
+        <select class="form-control" id="htk-select">
+          <option value="">Select an HToken</option>
+        </select>
       </div>
+      <div class="form-group">
+        <label for="mint-amount">Amount to mint</label>
+        <input
+          type="number"
+          class="form-control"
+          id="mint-amount"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Mint HToken</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- Burn HToken -->
+<div class="col-md-6">
+  <h2>Burn HToken</h2>
+  <form id="burn-form">
+    <div class="form-group">
+      <label for="htk-select">Select an HToken</label>
+      <select class="form-control" id="htk-select">
+        <option value="">Select an HToken</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="burn-amount">Amount to burn</label>
+      <input
+        type="number"
+        class="form-control"
+        id="burn-amount"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Burn HToken</button>
+  </form>
+</div>
+
 
       <hr />
 
-   <div class="col-md-6">
+<div class="col-md-6">
   <h2>Swap HToken</h2>
   <form id="swap-form">
     <div class="form-group">
@@ -140,6 +154,7 @@
   <br />
   <div id="swap-status"></div>
 </div>
+
 <!-- jQuery and Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
