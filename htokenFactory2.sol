@@ -2,72 +2,75 @@
 pragma solidity ^0.8.0;
 
 import "./HToken.sol";
-import "./HTokenFactory.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract HTokenRouter {
-    HTokenFactory public factory;
+contract HTokenFactory {
+    IERC20 public paxGold;
+    uint256 public burnFee;
+    uint256 public maxBurnFee;
+    uint256 public minDeposit;
 
-    // Registers an HToken contract for exchange.
-    function registerHToken(address hTokenAddress) public {
-        // Ensure that the caller is the owner of the HToken contract.
-        require(factory.hTokenName(hTokenAddress) != "", "HToken does not exist in factory");
-        require(factory.hTokenSymbol(hTokenAddress) != "", "HToken does not exist in factory");
+    mapping(uint256 => address) public hTokenIndexToAddress;
+    mapping(address => string) public hTokenName;
+    mapping(address => string) public hTokenSymbol;
+    mapping(string => address) public hTokenNameToAddress;
+    mapping(string => address) public hTokenSymbolToAddress;
+    uint256 public hTokenCount;
 
-        // Create an instance of the HToken contract.
-        HToken hToken = HToken(hTokenAddress);
+    event HTokenCreated(address hTokenAddress, string name, string symbol);
 
-        // Ensure that the caller is the owner of the HToken contract.
-        require(hToken.owner() == msg.sender, "Only the owner of the HToken contract can register it for exchange");
-
-        // Register the HToken contract for exchange.
-        factory.registerHToken(hToken);
+    constructor(
+        IERC20 _paxGold,
+        uint256 _burnFee,
+        uint256 _maxBurnFee,
+        uint256 _minDeposit
+    ) {
+        paxGold = _paxGold;
+        burnFee = _burnFee;
+        maxBurnFee = _maxBurnFee;
+        minDeposit = _minDeposit;
     }
 
-    // Unregisters an HToken contract from the exchange.
-    function unregisterHToken(address hTokenAddress) public {
-        // Ensure that the caller is the owner of the HToken contract.
-        require(factory.hTokenName(hTokenAddress) != "", "HToken does not exist in factory");
-        require(factory.hTokenSymbol(hTokenAddress) != "", "HToken does not exist in factory");
+    function createHToken(string memory name, string memory symbol) public {
+        require(paxGold.balanceOf(msg.sender) >= minDeposit, "Insufficient PaxGold balance");
 
-        // Create an instance of the HToken contract.
-        HToken hToken = HToken(hTokenAddress);
-
-        // Ensure that the caller is the owner of the HToken contract.
-        require(hToken.owner() == msg.sender, "Only the owner of the HToken contract can unregister it from the exchange");
-
-        // Unregister the HToken contract from the exchange.
-        factory.unregisterHToken(hTokenAddress);
+        HToken hToken = new HToken(paxGold, burnFee, maxBurnFee, name, symbol);
+        paxGold.transferFrom(msg.sender, address(hToken), minDeposit);
+        hToken.mint(minDeposit);
+        uint256 index = hTokenCount;
+        hTokenIndexToAddress[index] = address(hToken);
+        hTokenName[address(hToken)] = name;
+        hTokenSymbol[address(hToken)] = symbol;
+        hTokenNameToAddress[name] = address(hToken);
+        hTokenSymbolToAddress[symbol] = address(hToken);
+        hTokenCount++;
+        emit HTokenCreated(address(hToken), name, symbol);
     }
 
-    // Exchanges one HToken for another.
-    function swapExactHTKForHTK(address fromHTK, uint256 fromAmount, address toHTK) public {
-        // Ensure that both HToken contracts are registered for exchange.
-        require(factory.hTokenName(fromHTK) != "", "From HToken is not registered for exchange");
-        require(factory.hTokenSymbol(fromHTK) != "", "From HToken is not registered for exchange");
-        require(factory.hTokenName(toHTK) != "", "To HToken is not registered for exchange");
-        require(factory.hTokenSymbol(toHTK) != "", "To HToken is not registered for exchange");
-
-        // Get the instances of the HToken contracts.
-        HToken fromToken = HToken(fromHTK);
-        HToken toToken = HToken(toHTK);
-
-        // Ensure that the caller has sufficient balance of the from HToken.
-        require(fromToken.balanceOf(msg.sender) >= fromAmount, "Insufficient from HToken balance");
-
-        // Calculate the number of to HTokens to be received.
-        uint256 toAmount = fromToken.updateValue(fromAmount, toHTK);
-
-        // Transfer the from HTokens from the caller to the exchange contract.
-        fromToken.transferFrom(msg.sender, address(this), fromAmount);
-
-        // Transfer the to HTokens from the exchange contract to the caller.
-        toToken.transfer(msg.sender, toAmount);
-        emit Swap(msg.sender, fromAmount, fromHTK, toHTK, toAmount);
+    function getHTokenCount() public view returns (uint256) {
+        return hTokenCount;
     }
 
-    // Sets the address of the HTokenFactory contract.
-    function setHTokenFactory(address factoryAddress) public {
-        factory = HTokenFactory(factoryAddress);
+    function getHTokenAtIndex(uint256 index) public view returns (address) {
+        require(index < hTokenCount, "Index out of bounds");
+        return hTokenIndexToAddress[index];
     }
 
-    event Swap(address indexed user, uint256 amount, address indexed fromHTK, address indexed toHTK, uint
+    function getHTokenNameAtIndex(uint256 index) public view returns (string memory) {
+        address hTokenAddress = getHTokenAtIndex(index);
+        return hTokenName[hTokenAddress];
+    }
+
+    function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
+        address hTokenAddress = getHTokenAtIndex(index);
+        return hTokenSymbol[hTokenAddress];
+    }
+
+    function getHTokenByName(string memory name) public view returns (address) {
+        return hTokenNameToAddress[name];
+    }
+
+    function getHTokenBySymbol(string memory symbol) public view returns (address) {
+        return hTokenSymbolToAddress[symbol];
+    }
+}
