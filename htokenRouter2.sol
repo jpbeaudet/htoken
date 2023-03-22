@@ -70,4 +70,5 @@ contract HTokenRouter {
         factory = HTokenFactory(factoryAddress);
     }
 
-    event Swap(address indexed user, uint256 amount, address indexed fromHTK, address indexed toHTK, uint
+    event Swap(address indexed user, uint256 amount, address indexed fromHTK, address indexed toHTK, uint256 toAmount);
+}
