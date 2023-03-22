@@ -4,45 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>HToken Test</title>
+    <title>HToken Testing</title>
 
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-Dziy5+pb+dN1Nn0C0+Mp6hekZU6ua7a6mG5LrBWBQ9yUksWzXQDQ2Y6RS+Spa4E"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-
-    <!-- Bootstrap JS -->
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.3/dist/umd/popper.min.js"
-      integrity="sha384-q5Q5JVPclV7htu5+rVo8V7PY2f89R1+Yz54EJeIKCw7XYf3oeh+GWKC9J9bEUVUr"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
-      integrity="sha384-9V7pccatAchDPVx+CdmmKPHrnLUrTWrTzvbv7VW0q8X+7VgBmJxvF+wzLJ8rTQr/"
-      crossorigin="anonymous"
-    ></script>
-
-    <!-- Import JavaScript files -->
-    <script src="js/mint.js"></script>
-    <script src="js/burn.js"></script>
-    <script src="js/transfer.js"></script>
-    <script src="js/swap.js"></script>
   </head>
   <body>
-    <div class="container mt-5">
-      <h1>HToken Test</h1>
-      <p>This page allows you to test the HToken smart contract.</p>
+    <div class="container my-5">
+      <h1 class="text-center">HToken Testing</h1>
+      <hr />
 
-      <div class="row mt-5">
+      <!-- Create HToken -->
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Create HToken</h2>
+          <form id="create-htk-form">
+            <div class="form-group">
+              <label for="htk-name">Name</label>
+              <input type="text" class="form-control" id="htk-name" />
+            </div>
+            <div class="form-group">
+              <label for="htk-symbol">Symbol</label>
+              <input type="text" class="form-control" id="htk-symbol" />
+            </div>
+            <button type="submit" class="btn btn-primary">Create HToken</button>
+          </form>
+        </div>
+        
+        <!-- Explore HTokens -->
+        <div class="col-md-6">
+          <h2>Explore HTokens</h2>
+          <form id="explore-htk-form">
+            <div class="form-group">
+              <label for="htk-address">HToken Address</label>
+              <input type="text" class="form-control" id="htk-address" />
+            </div>
+            <button type="submit" class="btn btn-primary">Explore HToken</button>
+          </form>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- Mint HToken -->
+      <div class="row">
         <div class="col-md-6">
           <h2>Mint HToken</h2>
           <form id="mint-form">
@@ -52,26 +62,73 @@
                 type="number"
                 class="form-control"
                 id="mint-amount"
-                name="mint-amount"
-                required
               />
             </div>
-            <button type="submit" class="btn btn-primary">Mint</button>
+            <button type="submit" class="btn btn-primary">Mint HToken</button>
           </form>
         </div>
-<div class="col-md-6">
-  <h2>Burn HToken</h2>
-  <form id="burn-form">
+
+        <!-- Burn HToken -->
+        <div class="col-md-6">
+          <h2>Burn HToken</h2>
+          <form id="burn-form">
+            <div class="form-group">
+              <label for="burn-amount">Amount to burn</label>
+              <input
+                type="number"
+                class="form-control"
+                id="burn-amount"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Burn HToken</button>
+          </form>
+        </div>
+      </div>
+
+      <hr />
+
+   <div class="col-md-6">
+  <h2>Swap HToken</h2>
+  <form id="swap-form">
     <div class="form-group">
-      <label for="burn-amount">Amount to burn</label>
+      <label for="from-htk">From HToken</label>
+      <select class="form-control" id="from-htk">
+        <option value="">Select an HToken</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="from-amount">Amount to swap</label>
       <input
         type="number"
         class="form-control"
-        id="burn-amount"
-        name="burn-amount"
+        id="from-amount"
+        placeholder="Enter amount"
+        min="0"
+        step="0.01"
         required
       />
     </div>
-    <button type="submit" class="btn btn-primary">Burn</button>
+    <div class="form-group">
+      <label for="to-htk">To HToken</label>
+      <select class="form-control" id="to-htk">
+        <option value="">Select an HToken</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="to-amount">Expected amount to receive</label>
+      <input
+        type="number"
+        class="form-control"
+        id="to-amount"
+        placeholder="Expected amount to receive"
+        min="0"
+        step="0.01"
+        required
+        disabled
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Swap</button>
   </form>
+  <br />
+  <div id="swap-status"></div>
 </div>
