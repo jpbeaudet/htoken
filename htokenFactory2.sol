@@ -31,23 +31,29 @@ contract HTokenFactory {
         minDeposit = _minDeposit;
     }
 
-    function createHToken(string memory name, string memory symbol) public {
-        require(paxGold.balanceOf(msg.sender) >= minDeposit, "Insufficient PaxGold balance");
-        require(hTokenNameToAddress[name] == address(0), "HToken name already exists"); // Ensure that the name is not already in use
-        require(hTokenSymbolToAddress[symbol] == address(0), "HToken symbol already exists"); // Ensure that the symbol is not already in use
+function createHToken(string memory name, string memory symbol) public {
+    require(paxGold.balanceOf(msg.sender) >= minDeposit, "Insufficient PaxGold balance");
+    require(hTokenNameToAddress[name] == address(0), "HToken name already exists"); // Ensure that the name is not already in use
+    require(hTokenSymbolToAddress[symbol] == address(0), "HToken symbol already exists"); // Ensure that the symbol is not already in use
 
-        HToken hToken = new HToken(paxGold, burnFee, maxBurnFee, name, symbol);
-        paxGold.transferFrom(msg.sender, address(hToken), minDeposit);
-        hToken.mint(minDeposit);
-        uint256 index = hTokenCount;
-        hTokenIndexToAddress[index] = address(hToken);
-        hTokenName[address(hToken)] = name;
-        hTokenSymbol[address(hToken)] = symbol;
-        hTokenNameToAddress[name] = address(hToken);
-        hTokenSymbolToAddress[symbol] = address(hToken);
-        hTokenCount++;
-        emit HTokenCreated(address(hToken), name, symbol);
-    }
+    HToken hToken = new HToken(paxGold, burnFee, maxBurnFee, name, symbol);
+    require(address(hToken) != address(0), "Invalid HToken contract address"); // Ensure that the HToken contract was successfully created
+    require(hToken.totalSupply() > 0, "Invalid HToken total supply"); // Ensure that the HToken contract has a non-zero total supply
+
+    paxGold.transferFrom(msg.sender, address(hToken), minDeposit);
+    hToken.mint(minDeposit);
+
+    uint256 index = hTokenCount;
+    require(hTokenIndexToAddress[index] == address(0), "Invalid HToken index"); // Ensure that the HToken index is not already in use
+    hTokenIndexToAddress[index] = address(hToken);
+    hTokenName[address(hToken)] = name;
+    hTokenSymbol[address(hToken)] = symbol;
+    hTokenNameToAddress[name] = address(hToken);
+    hTokenSymbolToAddress[symbol] = address(hToken);
+    hTokenCount++;
+
+    emit HTokenCreated(address(hToken), name, symbol);
+}
 
     function getHTokenCount() public view returns (uint256) {
         return hTokenCount;
