@@ -76,5 +76,9 @@ function mint(uint256 _value) public {
         _burn(msg.sender, calculatedBurnFee);
         return super.transfer(recipient, amount.sub(calculatedBurnFee));
     }
+    
+  function getDetails() public view returns (string memory, string memory, uint256, uint256) {
+    return (name(), symbol(), totalSupply(), value);
+    }
 
 }
