@@ -48,6 +48,14 @@ contract HTokenFactory {
 
         emit HTokenCreated(address(hToken), name, symbol);
     }
+    
+    function getAllHTokens() public view returns (address[] memory) {
+        address[] memory hTokens = new address[](hTokenCount);
+         for (uint256 i = 0; i < hTokenCount; i++) {
+             hTokens[i] = hTokenIndexToAddress[i];
+         }
+        return hTokens;
+    }
 
     function getHTokenCount() public view returns (uint256) {
         return hTokenCount;
