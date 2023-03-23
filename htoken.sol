@@ -26,7 +26,7 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
         paxGold = _paxGold;
     }
     
-    function _updateValue() private view returns (uint256) {
+    function _updateValue() public view returns (uint256) {
         return totalSupply() == 0 ? 0 : _totalReserve.div(totalSupply());
     }
 
