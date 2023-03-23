@@ -12,9 +12,11 @@ createHTKForm.addEventListener("submit", async (event) => {
   // Get form data
   const name = createHTKForm.elements.namedItem("htk-name").value;
   const symbol = createHTKForm.elements.namedItem("htk-symbol").value;
+  const initialDeposit = createHTKForm.elements.namedItem("initial-deposit").value;
+  const initialSupply = createHTKForm.elements.namedItem("initial-supply").value;
 
   // Check if form data is valid
-  if (!name || !symbol) {
+  if (!name || !symbol || !initialDeposit || !initialSupply) {
     alert("Please fill in all form fields to create HToken.");
     return;
   }
@@ -30,7 +32,7 @@ createHTKForm.addEventListener("submit", async (event) => {
     const gasLimit = 300000;
     const data = htkContract.deploy({
       data: HTK_BYTECODE,
-      arguments: [name, symbol],
+      arguments: [name, symbol, initialDeposit, initialSupply],
     }).encodeABI();
     const nonce = await web3.eth.getTransactionCount(accounts[0], "latest");
     const tx = {
@@ -47,7 +49,7 @@ createHTKForm.addEventListener("submit", async (event) => {
     const transactionHash = await htkContract
       .deploy({
         data: HTK_BYTECODE,
-        arguments: [name, symbol],
+        arguments: [name, symbol, initialDeposit, initialSupply],
       })
       .send(
         {
