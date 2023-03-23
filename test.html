@@ -25,22 +25,32 @@
       <h1 class="text-center">HToken Testing</h1>
       <hr />
 
-      <!-- Create HToken -->
-      <div class="row">
-        <div class="col-md-6">
-          <h2>Create HToken</h2>
-          <form id="create-htk-form">
-            <div class="form-group">
-              <label for="htk-name">Name</label>
-              <input type="text" class="form-control" id="htk-name" />
-            </div>
-            <div class="form-group">
-              <label for="htk-symbol">Symbol</label>
-              <input type="text" class="form-control" id="htk-symbol" />
-            </div>
-            <button type="submit" class="btn btn-primary">Create HToken</button>
-          </form>
-        </div>
+<!-- Create HToken -->
+<div class="row">
+  <div class="col-md-6">
+    <h2>Create HToken</h2>
+    <form id="create-htk-form">
+      <div class="form-group">
+        <label for="htk-name">Name</label>
+        <input type="text" class="form-control" id="htk-name" required />
+      </div>
+      <div class="form-group">
+        <label for="htk-symbol">Symbol</label>
+        <input type="text" class="form-control" id="htk-symbol" required />
+      </div>
+      <div class="form-group">
+        <label for="initial-deposit">Initial Deposit</label>
+        <input type="number" class="form-control" id="initial-deposit" name="initial-deposit" required />
+      </div>
+      <div class="form-group">
+        <label for="initial-supply">Initial Supply</label>
+        <input type="number" class="form-control" id="initial-supply" name="initial-supply" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Create HToken</button>
+    </form>
+  </div>
+</div>
+
         
 <!-- Explore HTokens -->
 <div class="col-md-6">
