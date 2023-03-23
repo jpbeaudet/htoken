@@ -14,6 +14,17 @@ contract HTokenRouter {
     function isValidHTK(address htk) public view returns (bool) {
         return factory.getHTokenByName(factory.hTokenName(htk)) == htk;
     }
+    
+    function getUserBalances(address user) public view returns (uint256, uint256[] memory) {
+        uint256 hTokenCount = factory.getHTokenCount();
+        uint256[] memory hTokenBalances = new uint256[](hTokenCount);
+        for (uint256 i = 0; i < hTokenCount; i++) {
+            address hTokenAddress = factory.getHTokenAtIndex(i);
+            HToken hToken = HToken(hTokenAddress);
+            hTokenBalances[i] = hToken.balanceOf(user);
+        }
+        return (hTokenBalances);
+    }
 
     // Swaps one HToken for another
     function swapExactHTKForHTK(
