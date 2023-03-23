@@ -56,6 +56,13 @@ contract HTokenFactory {
          }
         return hTokens;
     }
+    
+    function getHTokenDetailsByIndex(uint256 index) public view returns (address, string memory, string memory, uint256, uint256) {
+        require(index < hTokenCount, "Index out of bounds");
+        address hTokenAddress = hTokenIndexToAddress[index];
+        HToken hToken = HToken(hTokenAddress);
+     return (hTokenAddress, hToken.name(), hToken.symbol(), hToken.totalSupply(), hToken.value());
+    }
 
     function getHTokenCount() public view returns (uint256) {
         return hTokenCount;
