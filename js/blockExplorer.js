@@ -34,12 +34,11 @@ htkContract.methods.balanceOf(accountAddress).call()
     console.error('Failed to get balance:', error);
   });
 
-// Get the last 10 transactions for the HToken contract
 web3.eth.getPastLogs({
   address: htkAddress,
   fromBlock: 0,
   toBlock: 'latest',
-  topics: [null, null, null, null] // This is the event signature for the Transfer event
+  topics: [web3.utils.sha3('Transfer(address,address,uint256)'), null, null, null]
 })
   .then(logs => {
     // Process the logs to get the transaction data
