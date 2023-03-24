@@ -24,6 +24,7 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
         uint256 initialSupply,
         string memory _name,
         string memory _symbol
+        address userAddress // Add the user's address parameter
     ) ERC20(_name, _symbol) {
         paxGold = _paxGold;
 
@@ -34,7 +35,7 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
         _totalReserve = initialDeposit;
         value = _totalReserve.div(initialSupply);
         paxGold.safeTransferFrom(msg.sender, address(this), initialDeposit);
-        _mint(msg.sender, initialSupply);
+        _mint(userAddress, initialSupply); // Use the user's address instead of msg.sender
     }
     
     function _updateValue() public view returns (uint256) {
