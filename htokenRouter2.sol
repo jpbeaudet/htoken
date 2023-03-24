@@ -88,7 +88,7 @@ fromToken.approve(address(fromToken), fromAmount);
 fromToken.burn(fromAmount);
 
 // Transfer the paxGold to the toHTK contract and approve the router to spend the necessary amount of paxGold on behalf of the toHTK contract
-IERC20 paxGold = fromToken.paxGold
+IERC20 paxGold = fromToken.paxGold;
     paxGold.transfer(toHTK, paxGoldValue);
     paxGold.approve(address(toToken), paxGoldValue);
 
