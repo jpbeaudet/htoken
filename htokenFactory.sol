@@ -18,12 +18,8 @@ contract HTokenFactory {
 
     constructor(
         IERC20 _paxGold,
-        uint256 _burnFee,
-        uint256 _maxBurnFee
     ) {
         paxGold = _paxGold;
-        burnFee = _burnFee;
-        maxBurnFee = _maxBurnFee;
     }
 
     function createHToken(string memory name, string memory symbol, uint256 initialDeposit, uint256 initialSupply) public {
