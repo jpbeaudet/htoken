@@ -44,6 +44,7 @@ contract HTokenFactory {
         require(paxGold.balanceOf(msg.sender) >= initialDeposit, "Insufficient PaxGold balance");
         require(hTokenNameToAddress[name] == address(0), "HToken name already exists");
         require(hTokenSymbolToAddress[symbol] == address(0), "HToken symbol already exists");
+        require(paxGold.allowance(msg.sender, address(this)) >= initialDeposit, "Factory is not approved to spend PAXG on behalf of user");
 
         HToken hToken = new HToken(paxGold, initialDeposit, initialSupply, name, symbol, msg.sender);
         require(paxGold.transferFrom(msg.sender, address(hToken), initialDeposit), "Token transfer failed");
