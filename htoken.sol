@@ -23,7 +23,7 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
         uint256 initialDeposit,
         uint256 initialSupply,
         string memory _name,
-        string memory _symbol
+        string memory _symbol,
         address userAddress // Add the user's address parameter
     ) ERC20(_name, _symbol) {
         paxGold = _paxGold;
