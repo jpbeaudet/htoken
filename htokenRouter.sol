@@ -15,7 +15,7 @@ contract HTokenRouter {
         return factory.getHTokenByName(factory.hTokenName(htk)) == htk;
     }
     
-    function getUserBalances(address user) public view returns (uint256, uint256[] memory) {
+    function getUserBalances(address user) public view returns (uint256[] memory) {
         uint256 hTokenCount = factory.getHTokenCount();
         uint256[] memory hTokenBalances = new uint256[](hTokenCount);
         for (uint256 i = 0; i < hTokenCount; i++) {
