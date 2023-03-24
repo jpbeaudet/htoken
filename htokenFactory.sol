@@ -30,7 +30,7 @@ contract HTokenFactory {
         require(hTokenSymbolToAddress[symbol] == address(0), "HToken symbol already exists");
 
         HToken hToken = new HToken(paxGold, initialDeposit, initialSupply, name, symbol);
-        require(address(hToken) != address(0), "Invalid HToken contract address");
+        require(paxGold.transferFrom(msg.sender, address(hToken), initialDeposit), "Token transfer failed");
 
         uint256 index = hTokenCount;
         hTokenIndexToAddress[index] = address(hToken);
