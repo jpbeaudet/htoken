@@ -60,17 +60,17 @@ contract HTokenFactory {
     }
 
     /**
-
-	@dev Get all HTokens created
-	@return An array of addresses representing all HTokens created
-	*/
+    * @dev Get all HTokens created
+    * @return An array of addresses representing all HTokens created
+    */
     function getAllHTokens() public view returns(address[] memory) {
-        address[] memory hTokens = new address;
-        for (uint256 i = 0; i < hTokenCount; i++) {
-            hTokens[i] = hTokenIndexToAddress[i];
-        }
-        return hTokens;
+    	address[] memory hTokens = new address[](hTokenCount);
+    	for (uint256 i = 0; i < hTokenCount; i++) {
+        	hTokens[i] = hTokenIndexToAddress[i];
+    	}
+    	return hTokens;
     }
+
     /**
 
     @dev Get details of an HToken by its index
