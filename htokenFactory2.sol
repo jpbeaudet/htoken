@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^ 0.8 .0;
 
 import "./HToken.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -58,84 +58,84 @@ contract HTokenFactory {
 
         emit HTokenCreated(address(hToken), name, symbol);
     }
-    
- /**
 
-@dev Get all HTokens created
-@return An array of addresses representing all HTokens created
-*/
-function getAllHTokens() public view returns (address[] memory) {
-address[] memory hTokens = new address;
-for (uint256 i = 0; i < hTokenCount; i++) {
-hTokens[i] = hTokenIndexToAddress[i];
-}
-return hTokens;
-}
-/**
+    /**
 
-@dev Get details of an HToken by its index
-@param index The index of the HToken to get details of
-@return A tuple containing the HToken's address, name, symbol, total supply, and current value
-*/
-function getHTokenDetailsByIndex(uint256 index) public view returns (address, string memory, string memory, uint256, uint256) {
-require(index < hTokenCount, "Index out of bounds");
-address hTokenAddress = hTokenIndexToAddress[index];
-HToken hToken = HToken(hTokenAddress);
-return (hTokenAddress, hToken.name(), hToken.symbol(), hToken.totalSupply(), hToken.value());
-}
-/**
+	@dev Get all HTokens created
+	@return An array of addresses representing all HTokens created
+	*/
+    function getAllHTokens() public view returns(address[] memory) {
+        address[] memory hTokens = new address;
+        for (uint256 i = 0; i < hTokenCount; i++) {
+            hTokens[i] = hTokenIndexToAddress[i];
+        }
+        return hTokens;
+    }
+    /**
 
-@dev Get the total number of HTokens created
-@return The total number of HTokens created
-*/
-function getHTokenCount() public view returns (uint256) {
-return hTokenCount;
-}
-/**
+    @dev Get details of an HToken by its index
+    @param index The index of the HToken to get details of
+    @return A tuple containing the HToken's address, name, symbol, total supply, and current value
+    */
+    function getHTokenDetailsByIndex(uint256 index) public view returns(address, string memory, string memory, uint256, uint256) {
+        require(index < hTokenCount, "Index out of bounds");
+        address hTokenAddress = hTokenIndexToAddress[index];
+        HToken hToken = HToken(hTokenAddress);
+        return (hTokenAddress, hToken.name(), hToken.symbol(), hToken.totalSupply(), hToken.value());
+    }
+    /**
 
-@dev Get the address of an HToken by its index
-@param index The index of the HToken to get the address of
-@return The address of the HToken
-*/
-function getHTokenAtIndex(uint256 index) public view returns (address) {
-require(index < hTokenCount, "Index out of bounds");
-return hTokenIndexToAddress[index];
-}
-/**
+    @dev Get the total number of HTokens created
+    @return The total number of HTokens created
+    */
+    function getHTokenCount() public view returns(uint256) {
+        return hTokenCount;
+    }
+    /**
 
-@dev Get the name of an HToken by its index
-@param index The index of the HToken to get the name of
-@return The name of the HToken
-*/
-function getHTokenNameAtIndex(uint256 index) public view returns (string memory) {
-address hTokenAddress = getHTokenAtIndex(index);
-return hTokenName[hTokenAddress];
-}
-/**
+    @dev Get the address of an HToken by its index
+    @param index The index of the HToken to get the address of
+    @return The address of the HToken
+    */
+    function getHTokenAtIndex(uint256 index) public view returns(address) {
+        require(index < hTokenCount, "Index out of bounds");
+        return hTokenIndexToAddress[index];
+    }
+    /**
 
-@dev Get the symbol of an HToken by its index
-@param index The index of the HToken to get the symbol of
-@return The symbol of the HToken
-*/
-function getHTokenSymbolAtIndex(uint256 index) public view returns (string memory) {
-address hTokenAddress = getHTokenAtIndex(index);
-return hTokenSymbol[hTokenAddress];
-}
-/**
+    @dev Get the name of an HToken by its index
+    @param index The index of the HToken to get the name of
+    @return The name of the HToken
+    */
+    function getHTokenNameAtIndex(uint256 index) public view returns(string memory) {
+        address hTokenAddress = getHTokenAtIndex(index);
+        return hTokenName[hTokenAddress];
+    }
+    /**
 
-@dev Get the address of an HToken by its name
-@param name The name of the HToken to get the address of
-@return The address of the HToken
-*/
-function getHTokenByName(string memory name) public view returns (address) {
-return hTokenNameToAddress[name];
-}
-/**
+    @dev Get the symbol of an HToken by its index
+    @param index The index of the HToken to get the symbol of
+    @return The symbol of the HToken
+    */
+    function getHTokenSymbolAtIndex(uint256 index) public view returns(string memory) {
+        address hTokenAddress = getHTokenAtIndex(index);
+        return hTokenSymbol[hTokenAddress];
+    }
+    /**
 
-@dev Get the address of an HToken by its symbol
-@param symbol The symbol of the HToken to get the address of
-@return The address of the HToken
-*/
-function getHTokenBySymbol(string memory symbol) public view returns (address) {
-return hTokenSymbolToAddress[symbol];
-}
+    @dev Get the address of an HToken by its name
+    @param name The name of the HToken to get the address of
+    @return The address of the HToken
+    */
+    function getHTokenByName(string memory name) public view returns(address) {
+        return hTokenNameToAddress[name];
+    }
+    /**
+
+    @dev Get the address of an HToken by its symbol
+    @param symbol The symbol of the HToken to get the address of
+    @return The address of the HToken
+    */
+    function getHTokenBySymbol(string memory symbol) public view returns(address) {
+        return hTokenSymbolToAddress[symbol];
+    }
