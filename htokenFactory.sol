@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract HTokenFactory {
     IERC20 public paxGold;
-    uint256 public burnFee;
-    uint256 public maxBurnFee;
 
     mapping(uint256 => address) public hTokenIndexToAddress;
     mapping(address => string) public hTokenName;
