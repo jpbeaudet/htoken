@@ -78,6 +78,17 @@ function mint(uint256 _value) public {
         return super.transfer(recipient, amount.sub(calculatedBurnFee));
     }
     
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        uint256 calculatedBurnFee = amount.mul(_burnFee).div(10000);
+
+        if (calculatedBurnFee > _maxBurnFee) {
+            calculatedBurnFee = _maxBurnFee;
+         }
+
+        _burn(sender, calculatedBurnFee);
+        return super.transferFrom(sender, recipient, amount.sub(calculatedBurnFee));
+    }
+    
   function getDetails() public view returns (string memory, string memory, uint256, uint256) {
     return (name(), symbol(), totalSupply(), value);
     }
