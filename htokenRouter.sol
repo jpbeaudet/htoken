@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import "./HToken.sol";
 import "./HTokenFactory.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract HTokenRouter {
+contract HTokenRouter is ReentrancyGuard {
     HTokenFactory public factory;
 
     constructor(HTokenFactory _factory) {
@@ -31,7 +32,7 @@ contract HTokenRouter {
         address fromHTK,
         uint256 fromAmount,
         address toHTK
-    ) public {
+    ) public nonReentrant {
         // Ensure that the fromHTK and toHTK are valid HToken contracts
         require(isValidHTK(fromHTK), "fromHTK is not a valid HToken contract");
         require(isValidHTK(toHTK), "toHTK is not a valid HToken contract");
