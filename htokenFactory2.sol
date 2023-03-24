@@ -26,7 +26,7 @@ contract HTokenFactory {
      * @param _paxGold The address of the PAXG contract
      */
     constructor(
-        IERC20 _paxGold,
+        IERC20 _paxGold
     ) {
         paxGold = _paxGold;
     }
