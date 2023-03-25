@@ -40,7 +40,3 @@ To use the HToken Protocol, you can follow these steps:
 2.  Call the `createHToken` function on the `HTokenFactory` contract to create a new HToken.
 3.  Use the `HTokenRouter` contract to exchange one HToken for another.
 
-License
--------
-
-The HToken Protocol is licensed under the MIT License.
