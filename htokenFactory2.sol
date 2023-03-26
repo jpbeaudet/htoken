@@ -47,7 +47,6 @@ contract HTokenFactory {
         require(paxGold.allowance(msg.sender, address(this)) >= initialDeposit, "Factory is not approved to spend PAXG on behalf of user");
 
         HToken hToken = new HToken(paxGold, initialDeposit, initialSupply, name, symbol, msg.sender);
-        require(paxGold.transferFrom(msg.sender, address(hToken), initialDeposit), "Token transfer failed");
 
         uint256 index = hTokenCount;
         hTokenIndexToAddress[index] = address(hToken);
