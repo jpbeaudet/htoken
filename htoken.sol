@@ -34,7 +34,6 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
 
         _totalReserve = initialDeposit;
         value = _totalReserve.div(initialSupply);
-         require(paxGold.transferFrom(msg.sender, address(this), initialDeposit), "Token transfer failed");
         _mint(userAddress, initialSupply); // Use the user's address instead of msg.sender
     }
     
