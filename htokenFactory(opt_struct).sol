@@ -62,6 +62,12 @@ contract HTokenFactory {
         HTokenData storage hTokenData = hTokenIndexToData[index];
         return (hTokenData.hTokenAddress, hTokenData.name, hTokenData.symbol);
     }
+    
+    function getHTokenIndexByAddress(address target) public view returns (address, string memory, string memory) {
+        int256 index = hTokenAddressToIndex[target];
+        require(hTokenIndexToData[index].exists, "HToken index does not exist");
+        return index;
+    }
 
     function getHTokenByName(string memory name) public view returns (address) {
         uint256 index = hTokenNameToIndex[name];
