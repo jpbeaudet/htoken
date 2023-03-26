@@ -60,11 +60,9 @@ contract HToken is ERC20 {
 
         require(initialDeposit > 0, "Initial deposit must be greater than zero");
         require(initialSupply > 0, "Initial supply must be greater than zero");
-        require(paxGold.balanceOf(msg.sender) >= initialDeposit, "Insufficient PaxGold balance");
 
         _totalReserve = initialDeposit;
         value = _totalReserve.div(initialSupply);
-        require(paxGold.transferFrom(userAddress, address(this), initialDeposit), "Token transfer failed");
         _mint(userAddress, initialSupply);
     }
 
