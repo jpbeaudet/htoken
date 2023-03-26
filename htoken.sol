@@ -30,7 +30,6 @@ event HTokenBurned(address indexed tokenAddress, string name, string symbol, add
 
         require(initialDeposit > 0, "Initial deposit must be greater than zero");
         require(initialSupply > 0, "Initial supply must be greater than zero");
-        require(paxGold.balanceOf(msg.sender) >= initialDeposit, "Insufficient PaxGold balance");
 
         _totalReserve = initialDeposit;
         value = _totalReserve.div(initialSupply);
