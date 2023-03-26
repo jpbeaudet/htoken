@@ -17,6 +17,7 @@ contract HTokenFactory {
     mapping(uint256 => HTokenData) public hTokenIndexToData;
     mapping(string => uint256) public hTokenNameToIndex;
     mapping(string => uint256) public hTokenSymbolToIndex;
+    mapping(address => uint256) public hTokenAddressToIndex;
     uint256 public hTokenCount;
 
     event HTokenCreated(address indexed hTokenAddress, string name, string symbol);
@@ -46,6 +47,7 @@ contract HTokenFactory {
         });
         hTokenNameToIndex[name] = index;
         hTokenSymbolToIndex[symbol] = index;
+        hTokenAddressToIndex[address(hToken)] = index;
         hTokenCount++;
 
         emit HTokenCreated(address(hToken), name, symbol);
