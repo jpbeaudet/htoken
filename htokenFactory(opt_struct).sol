@@ -52,6 +52,10 @@ contract HTokenFactory {
 
         emit HTokenCreated(address(hToken), name, symbol);
     }
+    
+    function getHTokenCount() public view returns (uint256) {
+        return hTokenCount;
+    }
 
     function getHTokenDetailsByIndex(uint256 index) public view returns (address, string memory, string memory) {
         require(index < hTokenCount, "Index out of bounds");
