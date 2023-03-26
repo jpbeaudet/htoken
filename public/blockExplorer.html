@@ -1,0 +1,27 @@
+<div class="container">
+  <h2>HTK Explorer</h2>
+  <form>
+    <div class="form-group">
+      <label for="htk-address">HTK Address</label>
+      <input type="text" class="form-control" id="htk-address" placeholder="Enter HTK address">
+    </div>
+    <button type="submit" class="btn btn-primary">Explore</button>
+  </form>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>HTK Information</h4>
+      <p><strong>HTK Name:</strong> <span id="htk-name"></span></p>
+      <p><strong>HTK Symbol:</strong> <span id="htk-symbol"></span></p>
+      <p><strong>HTK Total Supply:</strong> <span id="htk-total-supply"></span></p>
+      <p><strong>HTK Owner:</strong> <span id="htk-owner"></span></p>
+      <p><strong>HTK Balance:</strong> <span id="htk-balance"></span></p>
+    </div>
+    <div class="col-md-6">
+      <h4>HTK Transactions</h4>
+      <ul id="htk-transactions">
+        <!-- dynamically populated with transactions -->
+      </ul>
+    </div>
+  </div>
+</div>
