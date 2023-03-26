@@ -13,7 +13,8 @@ contract HTokenRouter is ReentrancyGuard {
     }
 
     function isValidHTK(address htk) public view returns (bool) {
-        return hTokenIndexToData[hTokenAddressToIndex[htk]].exists && hTokenIndexToData[hTokenAddressToIndex[htk]].hTokenAddress == htk;
+        (address hTokenAddress, , , bool exists) = factory.hTokenIndexToData(factory.hTokenAddressToIndex[htk]);
+        return exists && hTokenAddress == htk;
     }
     
     function getUserBalances(address user) public view returns (uint256[] memory) {
