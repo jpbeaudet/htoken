@@ -73,7 +73,7 @@ contract HTokenRouter is ReentrancyGuard {
         );
 
         // Calculate the paxGold equivalent value of the fromAmount
-        uint256 paxGoldValue = fromToken.value().mul(fromAmount);
+        uint256 paxGoldValue = fromToken._updateValue().mul(fromAmount);
 
         // Transfer the fromHTK from the caller to the router, and approve the router to spend the fromAmount
         fromToken.transferFrom(msg.sender, address(this), fromAmount);
