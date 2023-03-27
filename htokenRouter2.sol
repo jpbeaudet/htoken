@@ -84,7 +84,6 @@ contract HTokenRouter is ReentrancyGuard {
 
         // Transfer the paxGold to the toHTK contract and approve the router to spend the necessary amount of paxGold on behalf of the toHTK contract
         IERC20 paxGold = fromToken.paxGold();
-        // paxGold.transfer(toHTK, paxGoldValue); // the transfer is already handled by the htoken contract
         paxGold.approve(address(toToken), paxGoldValue);
 
         // Mint the new toTokens using the paxGoldValue and send them to the caller
