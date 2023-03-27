@@ -89,7 +89,7 @@ contract HTokenRouter is ReentrancyGuard {
 
         // Mint the new toTokens using the paxGoldValue and send them to the caller
         toToken.mint(paxGoldValue); // this will consume paxg fromt he factory and return new htokens
-        uint256 toAmount = paxGoldValue.div(toToken.value());
+        uint256 toAmount = paxGoldValue.div(toToken._updateValue());
         toToken.transfer(msg.sender, toAmount); // send the htoken that were recieved in the mint phase
 
         // Emit the Swap event
