@@ -56,7 +56,7 @@ contract HTokenRouter is ReentrancyGuard {
         fromToken.approve(address(fromToken), fromAmount);
 
         // Burn the fromToken and retrieve the paxGoldValue
-        fromToken.burn(fromAmount);
+        fromToken.burn(fromAmount); // this will return paxg to the factory
 
         // Transfer the paxGold to the toHTK contract and approve the router to spend the necessary amount of paxGold on behalf of the toHTK contract
         IERC20 paxGold = fromToken.paxGold();
